@@ -1,0 +1,7 @@
+react-multi-carousel --save
+react-slick --save
+react-icons
+slick-carousel
+axios
+nodemailer
+twilio 

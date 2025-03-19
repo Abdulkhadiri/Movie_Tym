@@ -1,0 +1,254 @@
+
+body {
+  background-color: #f7f7f7; 
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.moviedetails_container {
+  max-width: 100vw;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, skyblue 0%, #e9eff5 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px skyblue;
+  display: flex;
+  flex-direction: column; 
+  gap: 20px;
+  min-height: 90vh;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+
+.movie-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  text-align: center;
+  
+}
+
+.movie-image {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  object-fit: contain;
+  margin: 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 auto;
+}
+
+.details h1 {
+  font-size: 1.5rem;
+  color: #2e3b4e;
+  font-weight: 700;
+  margin: 0;
+}
+
+.details p {
+  font-size: 1rem;
+  color: #333;
+  margin-top: 10px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #ffb700;
+}
+
+.rating svg {
+  color: #ffdf00;
+}
+
+
+.movie-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Date Picker Section */
+.date-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
+  margin-top: 20px;
+  margin-left: 30px;
+  height: auto;
+}
+
+.date-picker label {
+  font-size: 1.3rem;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.date-picker input[type="date"] {
+  padding: 10px;
+  font-size: 1.2rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  background-color: white;
+  width: 100%;
+  max-width: 250px;
+  transition: border-color 0.3s ease-in-out;
+  margin-top: 5px;
+}
+
+.date-picker input[type="date"]:hover {
+  border-color: #00baf2;
+}
+
+.date-picker input[type="date"]:focus {
+  border-color: #00baf2;
+}
+
+
+.shows-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  max-width: 550px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.show-card {
+  background-color: skyblue;
+  padding: 10px;
+  width: 170px;
+  height: 180px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.show-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.show-card .theatre {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.show-card .show-time {
+  font-size: 1.4rem;
+  color: #00baf2;
+  font-weight: bold;
+}
+
+.show-card .show-time span {
+  display: block;
+  font-size: 1.1rem;
+  margin-top: 5px;
+  color: #777;
+}
+.no-shows{
+  color: red;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .moviedetails_container {
+    padding: 20px 10px;
+    flex-direction: column;
+  }
+
+  .movie-info {
+    flex-direction: column;
+    gap: 20px;
+    max-width: 100%;
+  }
+
+  .movie-side {
+    flex-direction: column;
+  }
+
+  .shows-container {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    margin-top: 40px;
+    margin-left: 10px;
+   
+  }
+
+  .show-card {
+    width: 90%;
+    height: auto;
+  }
+
+  .date-picker {
+    
+    /* margin-top: 20px;
+    margin-left: 8%;
+    margin-right: 25%; */
+    margin: 6px auto;
+    align-items: center;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .moviedetails_container {
+    flex-direction: row; 
+    justify-content: flex-start;
+    gap: 40px; 
+  }
+
+  .movie-info {
+    width: 40%;
+  }
+
+  .movie-side {
+    width: 60%; 
+    display: flex;
+    flex-direction: column;
+  }
+
+  .date-picker {
+    margin-left: 40px;
+  }
+  .shows-container {
+    flex-direction: row;
+    gap: 20px;
+    width: 90%;
+    margin-top: 40px;
+    margin-left: 10px;
+   
+  }
+}

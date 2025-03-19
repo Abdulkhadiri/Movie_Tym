@@ -1,0 +1,145 @@
+ .mov-container {
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  padding: 30px;
+  background: #00baf2;
+  font-family: 'Arial', sans-serif;
+  overflow-y: auto; /* Allow vertical scrolling */
+  justify-content: center;
+  align-items: center;
+}
+
+.mov-logo {
+  flex: 2; /* Adjust logo size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.mov-logo-img {
+  /* max-height: 150px; Set a reasonable default size */
+  /* object-fit: contain; */
+  border-radius: 10px;
+  margin-top: 20px; /* Add margin-top for spacing */
+}
+
+.mov-form-wrapper {
+  flex: 3; /* Increase form size */
+  padding: 30px 40px; /* Increase padding for larger form */
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px; /* Increase max-width for larger form */
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 20px; /* Add margin-top for spacing */
+  margin-right: 80px;
+}
+
+.mov-title {
+  font-size: 24px; /* Increase title size */
+  color: #333;
+  text-align: center;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.mov-form-group {
+  margin-bottom: 10px; /* Increase margin for better spacing */
+}
+
+.mov-label {
+  display: block;
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.mov-input {
+  width: 100%;
+  padding: 12px; /* Increase padding for larger input */
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px; /* Increase font size */
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.mov-input:focus {
+  border-color: #66ccff;
+  outline: none;
+}
+
+.mov-form-group select {
+  width: 100%;
+  padding: 12px; /* Increase padding for larger select */
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px; /* Increase font size */
+  background-color: #fff;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.mov-form-group select:focus {
+  border-color: #66ccff;
+  outline: none;
+}
+
+.mov-submit-btn {
+  width: 100%;
+  padding: 14px 20px; /* Increase padding for larger button */
+  background: #66ccff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px; /* Increase font size */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.mov-submit-btn:hover {
+  background: #4ba8e1;
+}
+
+@media (max-width: 768px) {
+  .mov-container {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .mov-logo {
+    padding-right: 0; /* Remove padding on smaller screens */
+  }
+
+  .mov-logo-img {
+    max-height: 120px; /* Adjust logo size for mobile */
+    margin-top: 10px; /* Maintain margin-top for spacing */
+  }
+
+  .mov-form-wrapper {
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px; /* Maintain margin-top for spacing */
+    margin-right: 0; /* Remove right margin on smaller screens */
+  }
+
+  .mov-title {
+    font-size: 22px; /* Adjust title size for mobile */
+  }
+
+  .mov-input,
+  .mov-form-group select {
+    font-size: 14px; /* Adjust input and select font size for mobile */
+  }
+
+  .mov-submit-btn {
+    padding: 12px;
+  }
+}

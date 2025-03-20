@@ -1,10 +1,7 @@
-
 import db from '../Middleware/Database.js';
-
-
-export const  tables = async()=>{
-    try{
-            await db.promise().query(`
+export const tables = async() => {
+    try {
+        await db.promise().query(`
                 CREATE DATABASE IF NOT EXISTS shows;
                 USE shows;
                 
@@ -77,10 +74,9 @@ export const  tables = async()=>{
                   CONSTRAINT booking_ibfk_2 FOREIGN KEY (show_id) REFERENCES show_table (show_id),
                   CONSTRAINT booking_ibfk_3 FOREIGN KEY (seat_id) REFERENCES seat (seat_id)
                 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;`
-                
-            )
-    }
-    catch(err){
-        console.log("error in creating table",err)
+
+        )
+    } catch (err) {
+        console.log("error in creating table", err)
     }
 }

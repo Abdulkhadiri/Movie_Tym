@@ -36,7 +36,6 @@ Theater.post('/add-show', async(req, res) => {
 
         const query = `INSERT INTO show_table (theater_id, movie_name, show_date, show_time, Language, Movie_Type) VALUES (?, ?, ?, ?, ?, ?)`;
         await execute_query(query, [theater_id, movie_name, show_date, show_time, Language, Movie_Type]);
-
         res.status(201).json({ message: 'Show added successfully' });
     } catch (error) {
         console.error('Database error:', error);

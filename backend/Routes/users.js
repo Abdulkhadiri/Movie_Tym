@@ -59,7 +59,7 @@ app.post('/login', async(req, res) => {
 });
 
 app.post('/signup_user', async(req, res) => {
-    const { username, email, password, cnfpassword } = req.body;
+    const { username, email, password, cnfpassword, phone_number } = req.body;
 
     if (password !== cnfpassword) return res.status(400).send("Passwords must match");
 
@@ -74,9 +74,9 @@ app.post('/signup_user', async(req, res) => {
         if (existingEmail.length > 0) return res.status(409).send("Email already exists");
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const insertQuery = "INSERT INTO user (username, password, user_type, email) VALUES (?, ?, ?, ?)";
+        const insertQuery = "INSERT INTO user (username, password, user_type, email,phone_number) VALUES (?, ?, ?, ?,?)";
 
-        await execute_query(insertQuery, [username, hashedPassword, "Customer", email]);
+        await execute_query(insertQuery, [username, hashedPassword, "Customer", email, phone_number]);
         res.status(201).send("User registered successfully");
     } catch (error) {
         console.error(error);

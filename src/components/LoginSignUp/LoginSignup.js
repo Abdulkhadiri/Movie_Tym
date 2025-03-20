@@ -18,7 +18,8 @@ function LoginSignup() {
   const [signupError, setSignupError] = useState("");
   const [loginSuccess, setLoginSuccess] = useState("");
   const [signupSuccess, setSignupSuccess] = useState("");
-  
+  const [signUpPhone, setSignUpPhone] = useState("");
+
   const navigate = useNavigate();
 
   const login = async (e) => {
@@ -87,6 +88,7 @@ function LoginSignup() {
         email: signUpEmail,
         password: signUpPassword,
         cnfpassword: signUpConfirmPassword,
+        phone: signUpPhone
       });
 
       setSignupSuccess("Registration successful! Please login.");
@@ -276,7 +278,21 @@ function LoginSignup() {
                         onChange={(e) => setSignUpEmail(e.target.value)}
                       />
                     </div>
+                    
                   </div>
+                  <div className="form-group">
+  <label htmlFor="signUpPhone">Phone Number</label>
+  <input
+    type="tel"
+    id="signUpPhone"
+    className="form-control"
+    placeholder="Enter phone number"
+    value={signUpPhone}
+    onChange={(e) => setSignUpPhone(e.target.value)}
+    required
+  />
+</div>
+
                   <div className="form-group">
                     <label htmlFor="signup-password" className="form-label">
                       Password

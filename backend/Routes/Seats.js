@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const Seats = express.Router();
 const db = require('../Middleware/Database');
-
+const booking_id = require('../Middleware/Booking_ud');
 const execute_query = async(query, params) => {
     return new Promise((resolve, reject) => {
         db.query(query, params, (error, results) => {
@@ -12,8 +12,7 @@ const execute_query = async(query, params) => {
     });
 };
 Seats.post("/book_seats", async(req, res) => {
-    const { seats, show_id } = req.body;
-
+    const { username, seats, show_id } = req.body;
     if (!seats || seats.length === 0 || !show_id) {
         return res.status(400).json({ message: "Invalid request data" });
     }
@@ -29,11 +28,15 @@ Seats.post("/book_seats", async(req, res) => {
             return res.status(403).json({ message: "Some seats are already booked", seats: alreadyBooked });
         }
 
-
-        const insertQuery = `INSERT INTO seat (show_id, seat_number) VALUES ${seats.map(() => '(?, ?)').join(',')}`;
-        const insertParams = seats.flatMap(seat => [show_id, seat]);
+        const book_id = booking_id(username, show_id);
+        const user_id = 'Select user_id from user where username=?';
+        const result = await execute_query(user_id, [username]);
+        const id = result[0].user_id;
+        const query1 = "Insert into booking (booking_id,user_id,show_id) values (?,?,?)";
+        execute_query(query1, [book_id, id, show_id]);
+        const insertQuery = `INSERT INTO seat (booking_id,show_id, seat_number) VALUES ${seats.map(() => '(?,?, ?)').join(',')}`;
+        const insertParams = seats.flatMap(seat => [book_id, show_id, seat]);
         await execute_query(insertQuery, insertParams);
-
         res.status(200).json({ message: "Seats booked successfully" });
     } catch (error) {
         console.error("Error booking seats:", error);

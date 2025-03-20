@@ -10,12 +10,21 @@ const connection = mysql.createConnection({
     port: process.env.DB_PORT,
     multipleStatements: true
 });
-connection.connect(async(err) => {
+
+connection.connect((err) => {
     if (err) {
         console.error('❌ Database connection failed: ' + err.stack);
         return;
     }
     console.log('✅ Connected to the database.');
+
+    createTables()
+        .then(() => console.log("✅ All tables are set up successfully."))
+        .catch((err) => console.error("⚠️ Error setting up tables:", err));
+});
+
+// Function to create tables using Promises
+const createTables = async() => {
     const tables = [
         `CREATE TABLE IF NOT EXISTS user (
             user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -66,22 +75,25 @@ connection.connect(async(err) => {
             FOREIGN KEY (show_id) REFERENCES show_table(show_id) ON DELETE CASCADE
         );`
     ];
-    try {
-        for (const query of tables) {
-            await new Promise((resolve, reject) => {
-                connection.query(query, (err) => {
-                    if (err) {
-                        console.error("❌ Error creating table:", err);
-                        reject(err);
-                    } else {
-                        console.log("✅ Table created successfully or already exists.");
-                        resolve();
-                    }
-                });
-            });
-        }
-    } catch (err) {
-        console.error("⚠️ Stopping execution due to an error.");
+
+    for (const query of tables) {
+        await executeQuery(query);
     }
-    module.exports = connection;
-});
+};
+
+// Function to execute queries
+const executeQuery = (query) => {
+    return new Promise((resolve, reject) => {
+        connection.query(query, (err, results) => {
+            if (err) {
+                console.error("❌ Error creating table:", err);
+                reject(err);
+            } else {
+                console.log("✅ Table created successfully or already exists.");
+                resolve(results);
+            }
+        });
+    });
+};
+
+module.exports = connection;

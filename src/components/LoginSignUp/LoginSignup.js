@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 function LoginSignup() {
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [signUpName, setSignUpName] = useState("");
@@ -34,7 +33,6 @@ function LoginSignup() {
       setIsLoading(false);
       return;
     }
-
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { 
         username, 

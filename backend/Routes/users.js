@@ -47,7 +47,6 @@ app.post('/login', async(req, res) => {
         const hashedPassword = results[0].password;
         const role = results[0].user_type;
         const isMatch = await bcrypt.compare(password, hashedPassword);
-
         if (!isMatch) return res.status(401).send("Check your username or password");
         const token = Auth.createToken(username, password, role);
         res.status(200).send(token);

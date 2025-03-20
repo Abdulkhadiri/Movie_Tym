@@ -59,16 +59,18 @@ app.post('/login', async(req, res) => {
 });
 
 app.post('/signup_user', async(req, res) => {
-    const { username, email, password, cnfpassword, phone_number } = req.body;
-
+    const { username, email, password, cnfpassword, phone } = req.body;
+    console.log(req.phone_number)
     if (password !== cnfpassword) return res.status(400).send("Passwords must match");
 
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) return res.status(400).send("Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.");
 
     try {
+        console.log("existing")
         const existingUser = await execute_query("SELECT username FROM user WHERE username = ?", [username]);
         if (existingUser.length > 0) return res.status(409).send("Username already exists");
+        console.log("email")
 
         const existingEmail = await execute_query("SELECT email FROM user WHERE email = ?", [email]);
         if (existingEmail.length > 0) return res.status(409).send("Email already exists");
@@ -76,7 +78,7 @@ app.post('/signup_user', async(req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const insertQuery = "INSERT INTO user (username, password, user_type, email,phone_number) VALUES (?, ?, ?, ?,?)";
 
-        await execute_query(insertQuery, [username, hashedPassword, "Customer", email, phone_number]);
+        await execute_query(insertQuery, [username, hashedPassword, "Customer", email, phone]);
         res.status(201).send("User registered successfully");
     } catch (error) {
         console.error(error);

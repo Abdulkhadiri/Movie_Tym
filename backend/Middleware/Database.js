@@ -1,21 +1,24 @@
 require('dotenv').config();
 const mysql = require('mysql2');
 
-// Create MySQL Connection
-const connection = mysql.createConnection({
+// ✅ Use `createPool()` to support multiple queries & async/await
+const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    multipleStatements: true
+    multipleStatements: true,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
-connection.connect(async(err) => {
-    if (err) {
-        console.error('❌ Database connection failed: ' + err.stack);
-        return;
-    }
-    console.log('✅ Connected to the database.');
+
+// ✅ Promisify queries for easier async/await usage
+
+
+module.exports = pool;
+const createTables = async () => {
     const tables = [
         `CREATE TABLE IF NOT EXISTS user (
             user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -66,22 +69,16 @@ connection.connect(async(err) => {
             FOREIGN KEY (show_id) REFERENCES show_table(show_id) ON DELETE CASCADE
         );`
     ];
+
     try {
         for (const query of tables) {
-            await new Promise((resolve, reject) => {
-                connection.query(query, (err) => {
-                    if (err) {
-                        console.error("❌ Error creating table:", err);
-                        reject(err);
-                    } else {
-                        console.log("✅ Table created successfully or already exists.");
-                        resolve();
-                    }
-                });
-            });
+            await db.query(query);
+            console.log("✅ Table created successfully or already exists.");
         }
     } catch (err) {
-        console.error("⚠️ Stopping execution due to an error.");
+        console.error("❌ Error creating table:", err);
     }
-    module.exports = connection;
-});
+};
+
+// Run table creation
+createTables();

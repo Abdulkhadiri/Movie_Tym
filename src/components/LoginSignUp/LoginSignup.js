@@ -83,6 +83,7 @@ function LoginSignup() {
     }
 
     try {
+      console.log(signUpPhone);
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup_user`, {
         username: signUpName,
         email: signUpEmail,
@@ -90,7 +91,7 @@ function LoginSignup() {
         cnfpassword: signUpConfirmPassword,
         phone: signUpPhone
       });
-
+    
       setSignupSuccess("Registration successful! Please login.");
       
       // Clear form fields

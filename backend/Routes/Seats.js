@@ -12,7 +12,9 @@ const execute_query = async(query, params) => {
     });
 };
 Seats.post("/book_seats", async(req, res) => {
+    console.log("Backend")
     const { username, seats, show_id } = req.body;
+    console.log(req.body);
     if (!seats || seats.length === 0 || !show_id) {
         return res.status(400).json({ message: "Invalid request data" });
     }
@@ -29,7 +31,7 @@ Seats.post("/book_seats", async(req, res) => {
         }
 
         const book_id = booking_id(username, show_id);
-        const user_id = 'Select user_id from user where username=?';
+        const user_id = "Select user_id from user where username=?";
         const result = await execute_query(user_id, [username]);
         const id = result[0].user_id;
         const query1 = "Insert into booking (booking_id,user_id,show_id) values (?,?,?)";

@@ -77,13 +77,15 @@ const ForgotPassword = () => {
     });
     if (res.status === 200) {
       try {
-        if (method === "phone") {
-          const res = await axios.post(`${process.env.REACT_APP_API_URL}/send-otp/sms`, { phone: phone });
-          setSentotp(await res.data.otp);
-        } else {
+        // if (method === "phone") {
+        //   const res = await axios.post(`${process.env.REACT_APP_API_URL}/send-otp/sms`, { phone: phone });
+        //   setSentotp(await res.data.otp);
+        // } else {
           const res = await axios.post(`${process.env.REACT_APP_API_URL}/send-otp/email`, { email: email });
+          
           setSentotp(await res.data.otp);
-        }
+          
+        //}
 
         setShowOTPDialog(true);
         setTimer(30);
@@ -122,7 +124,7 @@ const ForgotPassword = () => {
       setError("Please enter complete OTP");
       return;
     }
-    if (otpValue === sentOtp) {
+    if (otpValue == sentOtp) {
       setSuccess("OTP verified successfully!");
       setShowOTPDialog(false);
       setshowChangePasswordDialog(true);

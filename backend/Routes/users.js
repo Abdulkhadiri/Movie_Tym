@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const sendEmail = require('../Middleware/mailer');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
@@ -111,22 +111,15 @@ app.get('/getprofile', async (req, res) => {
 });
 app.post('/updateprofile', async (req, res) => {
     try {
-        const email = req.body.email;
         const username = req.body.username;
         const phone_number = req.body.phone_number;
         console.log(email);
         console.log(username);
         console.log(phone_number);
         // Query to update user profile in the 'users' table
-        const rows = await  execute_query('UPDATE user SET username = ?, phone_number = ? WHERE Email = ?', [username, phone_number, email]);
-        console.log(rows);
-        // If no user found, return 404
-        if (rows.affectedRows === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        // Return user profile (excluding sensitive information)
+        const rows = await  execute_query('UPDATE user SET username = ?, phone_number = ? WHERE Email = ?', [username, phone_number]);
         return res.status(200).json(
-            rows
+            { message: 'Profile updated successfully' }
         );
         } catch (error) {
             console.error('Profile update error:', error);
@@ -137,5 +130,51 @@ app.post('/updateprofile', async (req, res) => {
             });
         }
     });
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
+
+    const validatePassword = (password) => {
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return passwordRegex.test(password);
+    };
+
+const otpStore = new Map();
+app.post('/send-otp/email', async(req, res) => {
+    const { email } = req.body;
+    const otp = Math.floor(Math.random() * 900) + 1000;
+    console.log(`Generated OTP: ${otp}`);
+    otpStore.set(email, { otp, expiresAt: Date.now() + 5 * 60 * 1000 });
+    const emailResponse = await sendEmail(email, otp);
+    if (emailResponse.success) {
+        console.log("OTP email sent successfully");
+         res.json({otp});
+    } else {
+        return res.status(500).json(emailResponse);
+    }
+});
+
+app.post('/forgot-password', async (req, res) => {
+    const { email, phone } = req.body;
+    try {
+        const query = 'select * from user where email = ? ';
+        const result = await execute_query(query, [email]);
+        if (result.length > 0) {
+            return res.status(200).send("user exists");
+        }
+    } catch (err) {
+        console.error(err);
+    }
+});
+
+app.post('/update-password', async (req, res) => {
+   
+    const { password, email ,phone} = req.body;
+    
+    //if (!validatePassword(password)) return res.status(400).send("Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.");
+    const updateQuery = "UPDATE user SET password = ? WHERE email = ? OR phone_number = ?";
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await execute_query(updateQuery, [hashedPassword, email, phone]);
+    res.status(200).send("Password updated successfully!");
+});
+
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

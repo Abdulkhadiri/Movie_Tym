@@ -283,7 +283,6 @@ function UserProfile() {
         `${process.env.REACT_APP_API_URL}/updateprofile`,
         {
           name: editedInfo.name,
-          email: editedInfo.email,
           mobile: editedInfo.mobile,
         },
         {

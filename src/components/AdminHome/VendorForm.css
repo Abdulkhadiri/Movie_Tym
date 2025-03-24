@@ -27,10 +27,11 @@
     border: 1px solid #e9ecef;
   }
   
-  .section-title {
+  .sec-tit {
     color: #495057;
     font-size: 18px;
     margin-bottom: 20px;
+    background-color: none;
     padding-bottom: 10px;
     border-bottom: 2px solid #dee2e6;
   }

@@ -20,8 +20,10 @@ import UserProfile from "./components/MyBooking/UserProfile";
 import SeatSelection from "./components/Booking/SeatSelection";
 import ForgetPassword from "./components/Forgotpassword/Forgotpassword";
 import VendorDashboard from "./components/VenderDashboard/VenderDashboard";
-import VenderEdit from "./components/VenderDashboard/VenderEdit";
+// import VenderEdit from "./components/VenderDashboard/VenderEdit";
 import TicketPage from "./components/Booking/TicketPage";
+import Review from "./components/VenderDashboard/Review";
+import AdminEdit from "./components/AdminHome/AdminEdit";
 function App() {
   return (
     <BrowserRouter>
@@ -40,8 +42,10 @@ function App() {
         <Route path="/seats/:showId" element={<SeatSelection />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/vender-dashboard" element={<VendorDashboard/>}/>
-        <Route path="/venderedit" element={<VenderEdit/>}/>
+        {/* <Route path="/venderedit" element={<VenderEdit/>}/> */}
         <Route path="/ticket" element={<TicketPage/>}/>
+        <Route path="/review" element={<Review/>}/>
+        <Route path="/adminedit" element={<AdminEdit/>}/>
         </Routes>
     </BrowserRouter>
      

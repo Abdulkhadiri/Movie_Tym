@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './VendorForm.css';
 
-const VendorEditForm = ({ vendor, onUpdateVendor, onCancel }) => {
+const VendorEditForm= ({ onAddVendor }) => {
   const [theaterData, setTheaterData] = useState({
     ownerName: '',
     email: '',
@@ -41,18 +41,27 @@ const VendorEditForm = ({ vendor, onUpdateVendor, onCancel }) => {
     'Dolby Atmos'
   ];
 
-  // Populate form with existing vendor data when component mounts
-  useEffect(() => {
-    if (vendor) {
-      setTheaterData({
-        ...vendor
-      });
-    }
-  }, [vendor]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    onUpdateVendor(theaterData);
+    onAddVendor({ ...theaterData, id: Date.now() });
+    setTheaterData({
+      ownerName: '',
+      email: '',
+      phone: '',
+      theaterName: '',
+      address: '',
+      city: '',
+      state: '',
+      pincode: '',
+      totalScreens: '',
+      totalSeats: '',
+      facilities: [],
+      screenTypes: [],
+      licenseNumber: '',
+      openingHours: '',
+      closingHours: '',
+      status: 'active'
+    });
   };
 
   const handleChange = (e) => {
@@ -74,7 +83,7 @@ const VendorEditForm = ({ vendor, onUpdateVendor, onCancel }) => {
 
   return (
     <div className="theater-form-container">
-      <h2 className="theater-form-title">Edit Theater Details</h2>
+      <h2 className="theater-form-title">Add New Theater</h2>
       <form onSubmit={handleSubmit} className="theater-form">
         {/* Owner Details Section */}
         <div className="form-sect">
@@ -122,83 +131,158 @@ const VendorEditForm = ({ vendor, onUpdateVendor, onCancel }) => {
               required
             />
           </div>
+        </div>
+
+        {/* Theater Details Section */}
+        <div className="form-sect">
+          <h3 className="section-title">Theater Details</h3>
+          <div className="form-group">
+            <label>Theater Name</label>
+            <input
+              type="text"
+              name="theaterName"
+              value={theaterData.theaterName}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
           <div className="form-group">
-            <label>Status</label>
-            <select
-              name="status"
-              value={theaterData.status}
+            <label>Address</label>
+            <textarea
+              name="address"
+              value={theaterData.address}
               onChange={handleChange}
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>City</label>
+              <input
+                type="text"
+                name="city"
+                value={theaterData.city}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>State</label>
+              <input
+                type="text"
+                name="state"
+                value={theaterData.state}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Pincode</label>
+              <input
+                type="text"
+                name="pincode"
+                value={theaterData.pincode}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
         </div>
 
-        {/* Rest of the form remains similar to VendorForm */}
-        {/* ... (include the rest of the form sections from VendorForm) */}
-
-        <div className="form-actions">
-          <button type="submit" className="submit-butt">
-            Update Theater
-          </button>
-          <button 
-            type="button" 
-            className="cancel-butt" 
-            onClick={onCancel}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
-
-// Example usage in a parent component
-const VendorManagement = () => {
-  const [selectedVendor, setSelectedVendor] = useState(null);
-  const [vendors, setVendors] = useState([]);
-
-  const handleUpdateVendor = (updatedVendor) => {
-    setVendors(prevVendors => 
-      prevVendors.map(vendor => 
-        vendor.id === updatedVendor.id ? updatedVendor : vendor
-      )
-    );
-    setSelectedVendor(null);
-  };
-
-  const handleEditVendor = (vendor) => {
-    setSelectedVendor(vendor);
-  };
-
-  const handleCancelEdit = () => {
-    setSelectedVendor(null);
-  };
-
-  return (
-    <div>
-      {selectedVendor ? (
-        <VendorEditForm 
-          vendor={selectedVendor}
-          onUpdateVendor={handleUpdateVendor}
-          onCancel={handleCancelEdit}
-        />
-      ) : (
-        // Render vendor list with edit buttons
-        <div>
-          {vendors.map(vendor => (
-            <div key={vendor.id}>
-              {vendor.theaterName}
-              <button onClick={() => handleEditVendor(vendor)}>
-                Edit
-              </button>
+        {/* Theater Specifications */}
+        <div className="form-sect">
+          <h3 className="section-title">Theater Specifications</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Total Screens</label>
+              <input
+                type="number"
+                name="totalScreens"
+                value={theaterData.totalScreens}
+                onChange={handleChange}
+                required
+              />
             </div>
-          ))}
+
+            <div className="form-group">
+              <label>Total Seats</label>
+              <input
+                type="number"
+                name="totalSeats"
+                value={theaterData.totalSeats}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Opening Hours</label>
+              <input
+                type="time"
+                name="openingHours"
+                value={theaterData.openingHours}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Closing Hours</label>
+              <input
+                type="time"
+                name="closingHours"
+                value={theaterData.closingHours}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Facilities */}
+          <div className="form-group">
+            <label>Facilities Available</label>
+            <div className="checkbox-group">
+              {facilities.map(facility => (
+                <label key={facility} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={theaterData.facilities.includes(facility)}
+                    onChange={() => handleCheckboxChange('facilities', facility)}
+                  />
+                  {facility}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Screen Types */}
+          <div className="form-group">
+            <label>Screen Types</label>
+            <div className="checkbox-group">
+              {screenTypes.map(type => (
+                <label key={type} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={theaterData.screenTypes.includes(type)}
+                    onChange={() => handleCheckboxChange('screenTypes', type)}
+                  />
+                  {type}
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
-      )}
+
+        <button type="submit" className="submit-butt">
+          Add Theater
+        </button>
+      </form>
     </div>
   );
 };

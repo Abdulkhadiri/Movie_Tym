@@ -87,7 +87,7 @@ const VendorForm = ({ onAddVendor }) => {
       <form onSubmit={handleSubmit} className="theater-form">
         {/* Owner Details Section */}
         <div className="form-sect">
-          <h3 className="section-title">Owner Details</h3>
+          <h4 className="sec-tit">Owner Details</h4>
           <div className="form-group">
             <label>Owner Name</label>
             <input
@@ -135,7 +135,7 @@ const VendorForm = ({ onAddVendor }) => {
 
         {/* Theater Details Section */}
         <div className="form-sect">
-          <h3 className="section-title">Theater Details</h3>
+          <h4 className="sec-tit">Theater Details</h4>
           <div className="form-group">
             <label>Theater Name</label>
             <input
@@ -195,7 +195,7 @@ const VendorForm = ({ onAddVendor }) => {
 
         {/* Theater Specifications */}
         <div className="form-sect">
-          <h3 className="section-title">Theater Specifications</h3>
+          <h4 className="sec-tit">Theater Specifications</h4>
           <div className="form-row">
             <div className="form-group">
               <label>Total Screens</label>

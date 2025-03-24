@@ -86,7 +86,7 @@ function LoginSignup() {
         email: signUpEmail,
         password: signUpPassword,
         cnfpassword: signUpConfirmPassword,
-        phone: signUpPhone
+        phone_number: signUpPhone
       });
 
       setSignupSuccess("Registration successful! Please login.");

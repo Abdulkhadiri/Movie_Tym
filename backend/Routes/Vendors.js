@@ -1,9 +1,8 @@
 const express = require('express');
 const db = require('../Middleware/Database');
 const code_generator = require('../Middleware/Generate_show_id');
-
+const Auth = require('../Middleware/Authentication');
 const vendorRouter = express.Router();
-
 const execute_query = async(query, params) => {
     return new Promise((resolve, reject) => {
         db.query(query, params, (error, results) => {
@@ -15,21 +14,38 @@ const execute_query = async(query, params) => {
 
 // Route to add a new show
 vendorRouter.post('/add_Show', async(req, res) => {
-    const { movie_name, show_date, image, price, language, type, location, theater_id, show_time } = req.body;
+    const {
+        movieName,
+        releaseDate,
+        time,
+        movieImage,
+        ticketPrice,
+        language,
+        city,
+        area,
+        theatre,
+        screenNumber,
+        movieType
+    } = req.body;
 
-    if (!theater_id || !movie_name || !show_date || !show_time) {
+    console.log(req.body);
+
+    if (!theatre || !movieName || !releaseDate || !time || !screenNumber || !ticketPrice) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
     try {
-        const show_id = code_generator(location, theater_id, movie_name);
+        const show_id = code_generator(city, theatre, movieName); // Generates unique show_id
         const newShow = {
             show_id,
-            theater_id,
-            movie_name,
-            show_date,
-            show_time,
-            price,
+            theater_id: theatre, // Matches theater_id in show_table
+            movie_name: movieName,
+            show_date: releaseDate,
+            show_time: time,
+            Language: language, // Matches case in DB
+            Movie_Type: movieType, // New field added
+            screen: screenNumber, // Matches screen column
+            price: ticketPrice
         };
 
         const result = await execute_query('INSERT INTO show_table SET ?', newShow);
@@ -39,6 +55,7 @@ vendorRouter.post('/add_Show', async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 vendorRouter.get('/theaters/:city', async(req, res) => {
     const { city } = req.params;
@@ -51,8 +68,26 @@ vendorRouter.get('/theaters/:city', async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
-vendorRouter.get("/fetch_locations", async(req, res) => {
+vendorRouter.post('/login', async(req, res) => {
+    const { username, password } = req.body;
+    console.log(username, password);
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    try {
+        const query = 'SELECT * FROM user WHERE username = ? AND password = ? AND user_type = "theater_owner"';
+        const result = await execute_query(query, [username, password]);
+        if (result.length === 0) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        const token = Auth.createToken(username, password, 'theater_owner');
+        res.status(200).send(token);
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+vendorRouter.get("/fetch_city", async(req, res) => {
     try {
         const username = req.query.username;
 
@@ -72,7 +107,6 @@ vendorRouter.get("/getTheatres", async(req, res) => {
     try {
         const { username, city } = req.query;
         console.log(username, city);
-        // Fetch user_id of the theater owner
         const query = "SELECT user_id FROM user WHERE username = ? AND user_type = 'theater_owner'";
         const result = await execute_query(query, [username]);
 
@@ -80,13 +114,52 @@ vendorRouter.get("/getTheatres", async(req, res) => {
             return res.status(404).json({ error: "User not found or not a theater owner" });
         }
         const user_id = result[0].user_id;
-        const query1 = "SELECT name FROM theater WHERE owner_id = ? AND city = ?";
+        const query1 = "SELECT name,theater_id FROM theater WHERE owner_id = ? AND city = ?";
         const result1 = await execute_query(query1, [user_id, city]);
         const theaterNames = result1.map(theater => theater.name);
-        res.status(200).json(theaterNames);
+        res.status(200).json(result1);
     } catch (error) {
         console.error("Error fetching theatres:", error);
         res.status(500).json({ error: "Internal server error" });
+    }
+});
+vendorRouter.get("/getScreens", async(req, res) => {
+    try {
+        console.log("hello");
+        const {
+            theatre
+        } = req.query;
+        const query = "SELECT total_screens FROM theater WHERE theater_id = ?";
+        const result = await execute_query(query, [theatre]);
+        console.log(result);
+        res.json(result[0].total_screens);
+    } catch (error) {
+        console.error("Error fetching movies:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+vendorRouter.get("/getAreas", async(req, res) => {
+    const { owner_id, city } = req.query;
+    console.log(city, owner_id)
+    if (!city || !owner_id) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+    const query = "SELECT user_id FROM user WHERE username = ? AND user_type = 'theater_owner'";
+    const result = await execute_query(query, [owner_id]);
+    if (result.length === 0) {
+        return res.status(404).json({ error: "User not found or not a theater owner" });
+    }
+    let owner_id1 = result[0].user_id;
+    console.log(owner_id1)
+    const query1 = "SELECT DISTINCT location FROM theater WHERE city = ? AND owner_id = ?";
+    try {
+        const results = await execute_query(query1, [city, owner_id1]);
+        console.log(results);
+        res.json(results.map(row => row.location));
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: "Database error", details: error.message });
     }
 });
 module.exports = vendorRouter;

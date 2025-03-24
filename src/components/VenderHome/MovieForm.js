@@ -11,6 +11,7 @@ const MovieForm = () => {
     ticketPrice: '',
     language: '',
     city: '',
+    area: '',
     theatre: '',
     screenNumber: ''
   });
@@ -18,14 +19,14 @@ const MovieForm = () => {
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [cities, setCities] = useState([]);
+  const [areas, setAreas] = useState([]);
   const [availableTheatres, setAvailableTheatres] = useState([]);
   const [availableScreens, setAvailableScreens] = useState([]);
-
-  const username = sessionStorage.getItem("user") || 'theater_owner_1';
+  const username = sessionStorage.getItem("user") || 'alice_smith';
   const token = sessionStorage.getItem("token") || ""; 
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/Vendors/fetch_locations`, {
+    axios.get(`${process.env.REACT_APP_API_URL}/Vendors/fetch_City`, {
       params: { username },
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -42,48 +43,99 @@ const MovieForm = () => {
     .catch(error => console.error('Error fetching movies:', error));
   }, [username, token]);
 
-  const fetchTheatres = (selectedCity) => {
-    if (selectedCity) {
-      axios.get(`${process.env.REACT_APP_API_URL}/getTheatres`, {
-        params: { city: selectedCity, username },
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(response => setAvailableTheatres(response.data || []))
-      .catch(error => console.error('Error fetching theatres:', error));
-      setAvailableScreens([]);
-      setFormData(prev => ({ ...prev, theatre: '', screenNumber: '' }));
-    }
+  const fetchLocations = (selectedCity) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/Vendors/getAreas`, {
+      params: { owner_id: username, city: selectedCity },
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => setAreas(response.data || []))
+    .catch(error => console.error('Error fetching areas:', error));
   };
-  const fetchScreens = (selectedTheatre) => {
-    if (selectedTheatre) {
-      axios.get(`${process.env.REACT_APP_API_URL}/getScreens`, {
-        params: { theatre: selectedTheatre },
-        headers: { Authorization:`Bearer ${token}` }
-      })
-      .then(response => setAvailableScreens(response.data || []))
-      .catch(error => console.error('Error fetching screens:', error));
 
-      setFormData(prev => ({ ...prev, screenNumber: '' }));
-    }
+  const fetchTheatres = (selectedCity, selectedArea) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/Vendors/getTheatres`, {
+      params: { city: selectedCity, username, location: selectedArea },
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => setAvailableTheatres(response.data || []))
+    .catch(error => console.error('Error fetching theatres:', error));
+  };
+
+  const fetchScreens = (selectedTheatre) => {
+    console.log(selectedTheatre);
+    axios.get(`${process.env.REACT_APP_API_URL}/Vendors/getScreens`, {
+      params: { theatre: selectedTheatre },
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => {
+      const numberOfScreens = Number(response.data);
+      const screensArray = Array.from({ length: numberOfScreens }, (_, i) => i + 1);
+      setAvailableScreens(screensArray);
+    })
+    .catch(error => console.error('Error fetching screens:', error));
+  };
+
+  const handleCityChange = (city) => {
+    setFormData(prev => ({
+      ...prev,
+      city,
+      area: '',
+      theatre: '',
+      screenNumber: ''
+    }));
+    setAreas([]);
+    setAvailableTheatres([]);
+    setAvailableScreens([]);
+    if (city) fetchLocations(city);
+  };
+
+  const handleAreaChange = (area) => {
+    setFormData(prev => ({
+      ...prev,
+      area,
+      theatre: '',
+      screenNumber: ''
+    }));
+    setAvailableTheatres([]);
+    setAvailableScreens([]);
+    if (formData.city && area) fetchTheatres(formData.city, area);
+  };
+
+  const handleTheatreChange = (theatre) => {
+    setFormData(prev => ({
+      ...prev,
+      theatre,
+      screenNumber: ''
+    }));
+    setAvailableScreens([]);
+    if (theatre) fetchScreens(theatre);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
 
-    if (name === 'city') {
-      fetchTheatres(value);
-      console.log("hello");
-    }
-
-    if (name === 'theatre') {
-      fetchScreens(value);
-    }
-
-    if (name === 'movieName' && Array.isArray(movies)) {
-      setFilteredMovies(
-        movies.filter(movie => movie?.title?.toLowerCase().includes(value.toLowerCase()))
-      );
+    switch (name) {
+      case 'city':
+        handleCityChange(value);
+        break;
+      case 'area':
+        handleAreaChange(value);
+        break;
+      case 'theatre':
+        handleTheatreChange(value);
+        break;
+      case 'movieName':
+        setFormData(prev => ({ ...prev, [name]: value }));
+        if (Array.isArray(movies)) {
+          setFilteredMovies(
+            movies.filter(movie =>
+              movie?.title?.toLowerCase().includes(value.toLowerCase())
+            )
+          );
+        }
+        break;
+      default:
+        setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
@@ -104,11 +156,14 @@ const MovieForm = () => {
         ticketPrice: '',
         language: '',
         city: '',
+        area: '',
         theatre: '',
         screenNumber: ''
       });
-
       setFilteredMovies([]);
+      setAreas([]);
+      setAvailableTheatres([]);
+      setAvailableScreens([]);
     } catch (error) {
       console.error('Error submitting form:', error);
     }
@@ -123,7 +178,7 @@ const MovieForm = () => {
       <div className="mov-form-wrapper">
         <h2 className="mov-title">Submit Movie Details</h2>
         <form onSubmit={handleSubmit} className="movie-form">
-          
+
           <div className="mov-form-group">
             <label className="mov-label">Movie Name:</label>
             <input
@@ -141,7 +196,6 @@ const MovieForm = () => {
               ))}
             </datalist>
           </div>
-
           <div className="mov-form-group">
             <label className="mov-label">City:</label>
             <select
@@ -159,6 +213,23 @@ const MovieForm = () => {
           </div>
 
           <div className="mov-form-group">
+            <label className="mov-label">Area:</label>
+            <select
+              className="mov-input"
+              name="area"
+              value={formData.area}
+              onChange={handleChange}
+              required
+              disabled={!formData.city}
+            >
+              <option value="">Select Area</option>
+              {areas.map((area, index) => (
+                <option key={index} value={area}>{area}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mov-form-group">
             <label className="mov-label">Theatre:</label>
             <select
               className="mov-input"
@@ -166,11 +237,11 @@ const MovieForm = () => {
               value={formData.theatre}
               onChange={handleChange}
               required
-              disabled={!formData.city}
+              disabled={!formData.city || !formData.area}
             >
               <option value="">Select Theatre</option>
               {availableTheatres.map((theatre, index) => (
-                <option key={index} value={theatre}>{theatre}</option>
+                <option key={theatre.theatre_id} value={theatre.theater_id}>{theatre.name}</option>
               ))}
             </select>
           </div>
@@ -187,7 +258,7 @@ const MovieForm = () => {
             >
               <option value="">Select Screen</option>
               {availableScreens.map((screen, index) => (
-                <option key={index} value={screen}>{screen}</option>
+                <option key={index} value={screen}>Screen {screen}</option>
               ))}
             </select>
           </div>

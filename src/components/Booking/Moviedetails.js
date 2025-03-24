@@ -6,7 +6,7 @@ import ShowCard from './ShowCard';
 
 const MovieDetails = () => {
     const [movies, setMovies] = useState([]);
-    const [shows, setShows] = useState([]); // Ensuring shows is always an array
+    const [shows, setShows] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
     const { id } = useParams();
     const navigate = useNavigate();
@@ -25,12 +25,11 @@ const MovieDetails = () => {
             fetch(`http://localhost:5000/Theater_Generation/shows?movie_name=${movie.title}&date=${date}&time=19:00:00`)
                 .then(response => response.json())
                 .then(data => {
-                    // Check if data is an array, otherwise default to an empty array
                     setShows(Array.isArray(data) ? data : []);
                 })
                 .catch(error => {
                     console.error('Error fetching shows:', error);
-                    setShows([]); // Fallback to empty array on error
+                    setShows([]);
                 });
         }
     };
@@ -41,8 +40,15 @@ const MovieDetails = () => {
         fetchShows(date);
     };
 
-    const onShowSelect = (showId) => {
-        navigate(`/seats/${showId}`);
+    const onShowSelect = (show, movieName) => {
+        navigate(`/seats/${show.show_id}`, {
+            state: {
+                movieName,
+                theatreName: show.theatre,
+                showTime: show.showTime,
+                showDate: show.date
+            }
+        });
     };
 
     if (!movies.length || !movie) {
@@ -63,9 +69,7 @@ const MovieDetails = () => {
                 </div>
             </div>
 
-            {/* Date Picker and Shows Container */}
             <div className="movie-side">
-                {/* Date Picker Container */}
                 <div className="date-picker">
                     <label htmlFor="date">Select Date: </label>
                     <input
@@ -77,7 +81,6 @@ const MovieDetails = () => {
                     />
                 </div>
 
-                {/* Shows Container */}
                 <div className="shows-container">
                     {selectedDate && shows.length === 0 && <div className='no-shows'>No shows available for the selected date.</div>}
                     {Array.isArray(shows) && shows.map(show => (
@@ -88,7 +91,8 @@ const MovieDetails = () => {
                                 showTime: show.show_time,
                                 date: show.show_date
                             }}
-                            onClick={() => onShowSelect(show.show_id)}
+                            movieName={movie.title}
+                            onClick={onShowSelect}
                         />
                     ))}
                 </div>

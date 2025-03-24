@@ -1,138 +1,76 @@
-import React, { useState, useEffect, useCallback } from 'react';
-// import { Star } from 'lucide-react';
-import { useParams } from 'react-router-dom';
-import './SeatSelection.css';
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCouch } from "@fortawesome/free-solid-svg-icons";
+import "./SeatSelection.css";
+
+const sections = [
+  { name: "Orchestra", price: 200, rows: ["A", "B", "C"], seatsPerRow: 10 },
+  { name: "Mezzanine", price: 300, rows: ["D", "E", "F"], seatsPerRow: 10 },
+  { name: "Balcony", price: 400, rows: ["G", "H", "I"], seatsPerRow: 10 },
+];
 
 const SeatSelection = () => {
-    const [selectedSeats, setSelectedSeats] = useState([]);
-    const [seatsBooked, setSeatsBooked] = useState([]);
-    const { showId } = useParams();
-    const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
-    const seatsPerRow = 8;
+  const location = useLocation();
+  const { movieName, theatreName, showTime, showDate } = location.state || {};
+  const navigate = useNavigate();
+  const [selectedSeats, setSelectedSeats] = useState([]);
 
-    useEffect(() => {
-        console.log('showId from useParams:', showId);
-    }, [showId]);
-
-    const booked = useCallback(async () => {
-        if (!showId) {
-            console.warn('showId is undefined');
-            return;
-        }
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.error('No token found in localStorage');
-                return;
-            }
-            const result = await fetch(`${process.env.REACT_APP_API_URL}/seats/seats_booked?show_id=${showId}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (!result.ok) {
-                console.error('Failed to fetch seats:', result.status);
-                return;
-            }
-            const data = await result.json();
-            const seatNumbers = data.map(seat => seat.seat_number);
-            setSeatsBooked(seatNumbers);
-            console.log('Fetched booked seat numbers:', seatNumbers);
-        } catch (error) {
-            console.error('Error fetching booked seats:', error);
-        }
-    }, [showId]);
-
-    useEffect(() => {
-        if (showId) {
-            booked();
-        }
-
-        return () => {
-            setSeatsBooked([]);
-        };
-    }, [showId, booked]);
-
-    const handleSeatSelection = (seatId) => {
-        setSelectedSeats(prev =>
-            prev.includes(seatId)
-                ? prev.filter(seat => seat !== seatId)
-                : [...prev, seatId]
-        );
-    };
-
-    const handlePurchase = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.error('No token found in localStorage');
-                return;
-            }
-            const result = await fetch(`${process.env.REACT_APP_API_URL}/seats/book_seats`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-body: JSON.stringify({ seats: selectedSeats, show_id: showId }) // Use show_id instead of show_Id
-            });
-            if (!result.ok) {
-                console.error('Failed to book seats:', result.status);
-                return;
-            }
-            console.log('Seats booked successfully');
-            setSelectedSeats([]);
-            booked();
-        } catch (error) {
-            console.error('Error booking seats:', error);
-        }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Selected seats:', selectedSeats);
-    };
-
-    const isDisabled = (seatId) => seatsBooked.includes(seatId);
-
-    return (
-        <form className="booking-form" onSubmit={handleSubmit}>
-            <div className="seat-selection">
-                <h3>Select Seats</h3>
-                <div className="screen">Screen</div>
-                <div className="seating-grid">
-                    {rows.map(row => (
-                        <div key={row} className="row">
-                            {Array.from({ length: seatsPerRow }, (_, i) => {
-                                const seatId = `${row}${i + 1}`;
-                                return (
-                                    <label key={seatId} className="seat">
-                                        <input
-                                            disabled={isDisabled(seatId)}
-                                            type="checkbox"
-                                            checked={selectedSeats.includes(seatId)}
-                                            onChange={() => handleSeatSelection(seatId)}
-                                        />
-                                        <span>{seatId}</span>
-                                    </label>
-                                );
-                            })}
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <button
-                onClick={handlePurchase}
-                type="button"
-                className="confirm-button"
-                disabled={selectedSeats.length === 0}
-            >
-                Confirm Booking
-            </button>
-        </form>
+  const handleSeatClick = (seatId) => {
+    setSelectedSeats((prevSelected) =>
+      prevSelected.includes(seatId)
+        ? prevSelected.filter((seat) => seat !== seatId)
+        : [...prevSelected, seatId]
     );
+  };
+
+  const handleConfirmBooking = () => {
+    if (selectedSeats.length === 0) {
+      alert("Please select at least one seat.");
+      return;
+    }
+
+    let totalCost = 0;
+    selectedSeats.forEach((seatId) => {
+      const section = sections.find((sec) => sec.rows.includes(seatId.charAt(0)));
+      if (section) {
+        totalCost += section.price;
+      }
+    });
+
+    navigate("/ticket", {
+      state: { selectedSeats, totalCost, movieName, theatreName, showTime, showDate }
+    });
+  };
+
+  return (
+    <div>
+      <h2>Select Your Seats</h2>
+      <div className="curved-screen">SCREEN</div>
+
+
+      {sections.map((section) => (
+        <div key={section.name} className="section">
+          <h3>{section.name} - ₹{section.price}</h3>
+          {section.rows.map((row) => (
+            <div key={row} className="seat-row">
+              <span className="row-label">{row}</span>
+              {[...Array(section.seatsPerRow)].map((_, index) => {
+                const seatId = `${row}${index + 1}`;
+                return (
+                  <div key={seatId} className="seat-container" onClick={() => handleSeatClick(seatId)}>
+                    <FontAwesomeIcon icon={faCouch} className={`seat-icon ${selectedSeats.includes(seatId) ? "selected" : ""}`} />
+                    <span className="seat-label">{seatId}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      ))}
+      <button className="confirm-button" onClick={handleConfirmBooking}>Confirm Booking</button>
+    </div>
+  );
 };
 
 export default SeatSelection;

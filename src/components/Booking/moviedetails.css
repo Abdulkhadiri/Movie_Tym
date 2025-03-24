@@ -214,10 +214,9 @@ body {
 
   .date-picker {
     
-    /* margin-top: 20px;
+    margin-top: 20px;
     margin-left: 8%;
-    margin-right: 25%; */
-    margin: 6px auto;
+    margin-right: 25%;
     align-items: center;
   }
 }

@@ -81,4 +81,4 @@ const createTables = async () => {
 };
 
 // Run table creation
-createTables();
+// createTables();

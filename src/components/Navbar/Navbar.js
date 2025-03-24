@@ -91,6 +91,7 @@ const Navbar = () => {
         {windowWidth > 768 && (
           <div className="border-t">
             <div className="nav_items">
+              Welcome {user ? user : 'Guest'}!
               <Link to="/home">Home</Link>
               <Link to="/profile">Profile</Link>
               <Link to="/contact">Contact Us</Link>
@@ -98,9 +99,9 @@ const Navbar = () => {
               <div className="location-dropdown">
                 <MapPin className="location-icon" />
                 <select>
-                  <option value="new-york">New York</option>
-                  <option value="los-angeles">Los Angeles</option>
-                  <option value="chicago">Chicago</option>
+                  <option value="Hydreabad">Hydreabad</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Kolkatha">Kolkatha</option>
                 </select>
               </div>
             </div>

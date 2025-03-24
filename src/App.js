@@ -21,7 +21,7 @@ import SeatSelection from "./components/Booking/SeatSelection";
 import ForgetPassword from "./components/Forgotpassword/Forgotpassword";
 import VendorDashboard from "./components/VenderDashboard/VenderDashboard";
 import VenderEdit from "./components/VenderDashboard/VenderEdit";
-
+import TicketPage from "./components/Booking/TicketPage";
 function App() {
   return (
     <BrowserRouter>
@@ -41,6 +41,7 @@ function App() {
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/vender-dashboard" element={<VendorDashboard/>}/>
         <Route path="/venderedit" element={<VenderEdit/>}/>
+        <Route path="/ticket" element={<TicketPage/>}/>
         </Routes>
     </BrowserRouter>
      

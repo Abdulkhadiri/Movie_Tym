@@ -86,4 +86,59 @@ app.post('/signup_user', async(req, res) => {
     }
 });
 
+// Get User Profile
+app.get('/getprofile', async (req, res) => {
+    try {
+        // Check if req.user is set (assuming authentication middleware is used)
+
+        const email = req.query.email; // Extract user ID from authentication middleware
+        // Query to fetch user profile from the 'users' table
+        const rows = await  execute_query('SELECT user_id, username, email, phone_number, user_type FROM user WHERE Email = ?', [email]);
+        // If no user found, return 404
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Return user profile (excluding sensitive information)
+        return res.status(200).json(
+            {rows}
+        );
+
+    } catch (error) {
+        console.error('Profile retrieval error:', error);
+        return res.status(500).json({ 
+            success: false,
+            message: 'Internal Server Error',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+app.post('/updateprofile', async (req, res) => {
+    try {
+        const email = req.body.email;
+        const username = req.body.username;
+        const phone_number = req.body.phone_number;
+        console.log(email);
+        console.log(username);
+        console.log(phone_number);
+        // Query to update user profile in the 'users' table
+        const rows = await  execute_query('UPDATE user SET username = ?, phone_number = ? WHERE Email = ?', [username, phone_number, email]);
+        console.log(rows);
+        // If no user found, return 404
+        if (rows.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Return user profile (excluding sensitive information)
+        return res.status(200).json(
+            rows
+        );
+        } catch (error) {
+            console.error('Profile update error:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            });
+        }
+    });
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+

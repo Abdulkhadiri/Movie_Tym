@@ -27,7 +27,7 @@
 }
 
  /* ✅ Styling for Section Headings */
-h2 {
+.he {
   font-size: 28px;
   font-weight: bold;
   text-align: center;
@@ -69,7 +69,7 @@ h2 {
 
 
 /* ✅ Styling for Subheadings (Section Titles) */
-h3 {
+.hed {
   font-size: 20px;
   font-weight: bold;
   text-align: center;

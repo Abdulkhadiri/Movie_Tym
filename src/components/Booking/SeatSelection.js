@@ -74,12 +74,12 @@ const SeatSelection = () => {
 
     return (
         <div>
-            <h2>Select Your Seats</h2>
+            <h2 className='he'>Select Your Seats</h2>
             <div className="curved-screen">SCREEN</div>
 
             {sections.map((section) => (
                 <div key={section.name} className="section">
-                    <h3>{section.name} - ₹{section.price}</h3>
+                    <h3 className='hed'>{section.name} - ₹{section.price}</h3>
                     {section.rows.map((row) => (
                         <div key={row} className="seat-row">
                             <span className="row-label">{row}</span>

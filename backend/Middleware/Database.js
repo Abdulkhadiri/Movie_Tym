@@ -1,24 +1,30 @@
 require('dotenv').config();
 const mysql = require('mysql2');
 
-// ✅ Use `createPool()` to support multiple queries & async/await
-const pool = mysql.createPool({
+// Create MySQL Connection
+const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    multipleStatements: true,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    multipleStatements: true
 });
 
-// ✅ Promisify queries for easier async/await usage
+connection.connect((err) => {
+    if (err) {
+        console.error('❌ Database connection failed: ' + err.stack);
+        return;
+    }
+    console.log('✅ Connected to the database.');
 
+    createTables()
+        .then(() => console.log("✅ All tables are set up successfully."))
+        .catch((err) => console.error("⚠️ Error setting up tables:", err));
+});
 
-module.exports = pool;
-const createTables = async () => {
+// Function to create tables using Promises
+const createTables = async() => {
     const tables = [
         `CREATE TABLE IF NOT EXISTS user (
             user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,15 +76,24 @@ const createTables = async () => {
         );`
     ];
 
-    try {
-        for (const query of tables) {
-            await db.query(query);
-            console.log("✅ Table created successfully or already exists.");
-        }
-    } catch (err) {
-        console.error("❌ Error creating table:", err);
+    for (const query of tables) {
+        await executeQuery(query);
     }
 };
 
-// Run table creation
-// createTables();
+// Function to execute queries
+const executeQuery = (query) => {
+    return new Promise((resolve, reject) => {
+        connection.query(query, (err, results) => {
+            if (err) {
+                console.error("❌ Error creating table:", err);
+                reject(err);
+            } else {
+                console.log("✅ Table created successfully or already exists.");
+                resolve(results);
+            }
+        });
+    });
+};
+
+module.exports = connection;

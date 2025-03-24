@@ -40,7 +40,6 @@ vendorRouter.post('/add_Show', async(req, res) => {
     }
 });
 
-// Route to get theaters by city
 vendorRouter.get('/theaters/:city', async(req, res) => {
     const { city } = req.params;
 
@@ -53,4 +52,41 @@ vendorRouter.get('/theaters/:city', async(req, res) => {
     }
 });
 
+vendorRouter.get("/fetch_locations", async(req, res) => {
+    try {
+        const username = req.query.username;
+
+        const query = "Select user_id from user where username = ? and user_type='theater_owner'";
+        const result = await execute_query(query, [username]);
+        const user_id = result[0].user_id;
+        const query1 = "Select city from theater where owner_id = ?";
+        const result1 = await execute_query(query1, [user_id]);
+        const names = [...new Set(result1.map(student => student.city))];
+        res.status(200).json(names);
+    } catch (error) {
+        console.error("Error fetching locations:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+vendorRouter.get("/getTheatres", async(req, res) => {
+    try {
+        const { username, city } = req.query;
+        console.log(username, city);
+        // Fetch user_id of the theater owner
+        const query = "SELECT user_id FROM user WHERE username = ? AND user_type = 'theater_owner'";
+        const result = await execute_query(query, [username]);
+
+        if (result.length === 0) {
+            return res.status(404).json({ error: "User not found or not a theater owner" });
+        }
+        const user_id = result[0].user_id;
+        const query1 = "SELECT name FROM theater WHERE owner_id = ? AND city = ?";
+        const result1 = await execute_query(query1, [user_id, city]);
+        const theaterNames = result1.map(theater => theater.name);
+        res.status(200).json(theaterNames);
+    } catch (error) {
+        console.error("Error fetching theatres:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 module.exports = vendorRouter;

@@ -1,230 +1,275 @@
 /* ✅ General Styling */
+
 .seat-selection {
-  text-align: center;
-  padding: 20px;
+    text-align: center;
+    padding: 20px;
 }
+
 
 /* ✅ Curved Screen Shape */
+
 .curved-screen {
-  background: black;
-  color: white;
-  text-align: center;
-  padding: 15px;
-  margin: 20px auto;
-  width: 60%;
-  border-radius: 50px 50px 0 0; /* Creates a concave curve */
-  font-weight: bold;
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    background: black;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin: 20px auto;
+    width: 60%;
+    border-radius: 50px 50px 0 0;
+    /* Creates a concave curve */
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 
 /* ✅ Section Styling */
+
 .section {
-  margin-bottom: 20px;
-  text-align: center; /* Center align section headings */
+    margin-bottom: 20px;
+    text-align: center;
+    /* Center align section headings */
 }
 
- /* ✅ Styling for Section Headings */
+
+/* ✅ Styling for Section Headings */
+
 .he {
-  font-size: 28px;
-  font-weight: bold;
-  text-align: center;
-  color: #333;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
+
 .curved-screen {
-  background: red; /* Screen color */
-  color: white;
-  text-align: center;
-  padding: 15px;
-  margin: 20px auto;
-  width: 60%;
-  height: 50px;
-  border-radius: 0 0 50px 50px; /* Creates the curve */
-  font-weight: bold;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+    background: red;
+    /* Screen color */
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin: 20px auto;
+    width: 60%;
+    height: 50px;
+    border-radius: 0 0 50px 50px;
+    /* Creates the curve */
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
+
 
 /* Optional: Adding a subtle shadow effect */
+
 .curved-screen::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  height: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
-  filter: blur(5px);
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    filter: blur(5px);
 }
 
 
 /* ✅ Styling for Subheadings (Section Titles) */
+
 .hed {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  color: #555;
-  background: rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 5px;
-  margin: 10px auto;
-  width: fit-content;
-  text-transform: uppercase;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #555;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px auto;
+    width: fit-content;
+    text-transform: uppercase;
 }
 
 
 /* ✅ Seat Row */
+
 .seat-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap; /* Allows wrapping */
-  margin: 8px 0;
-  max-width: 100%;
-  gap: 8px; /* Adjusted gap for better alignment */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    /* Allows wrapping */
+    margin: 8px 0;
+    max-width: 100%;
+    gap: 8px;
+    /* Adjusted gap for better alignment */
 }
 
+
 /* ✅ Seat Container */
+
 .seat-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 4px; /* Reduced margin to bring seats closer */
-  cursor: pointer;
-  transition: transform 0.2s;
-  min-width: 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 4px;
+    /* Reduced margin to bring seats closer */
+    cursor: pointer;
+    transition: transform 0.2s;
+    min-width: 35px;
 }
 
 .seat-container:hover {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
+
 
 /* ✅ Seat Icons */
+
 .seat-icon {
-  font-size: 28px;
-  color: #00baf2;
-  transition: 0.3s;
+    font-size: 28px;
+    color: #00baf2;
+    transition: 0.3s;
 }
+
 
 /* ✅ Selected Seat */
+
 .selected {
-  color: red !important;
+    color: red !important;
 }
+
 
 /* ✅ Seat Labels */
-.seat-label {
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 3px;
-  color: black;
-  text-align: center;
+
+
+/* Styles for disabled (booked) seats */
+
+.seat-container.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background-color: #ff4d4d;
+    /* Light red for booked seats */
+    pointer-events: none;
 }
 
+.seat-container.disabled .seat-icon {
+    color: white;
+    /* Change icon color for better visibility */
+}
+
+.seat-container.disabled .seat-label {
+    color: white;
+    /* Change text color */
+}
+
+.seat-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 3px;
+    color: black;
+    text-align: center;
+}
+
+
 /* ✅ Confirm Booking Button */
+
 .confirm-button {
-  padding: 12px 20px;
-  font-size: 16px;
-  background: green;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-  border-radius: 5px;
-  transition: 0.3s;
-  display: block;
-  margin: 20px auto; /* Centers the button */
+    padding: 12px 20px;
+    font-size: 16px;
+    background: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 5px;
+    transition: 0.3s;
+    display: block;
+    margin: 20px auto;
+    /* Centers the button */
 }
 
 .confirm-button:hover {
-  background: darkgreen;
+    background: darkgreen;
 }
+
 
 /* ✅ Tablet Optimization */
+
 @media (max-width: 768px) {
-  .seat-row {
-    justify-content: center; /* Keeps seats centered */
-    gap: 5px; /* Reducing gap */
-  }
-
-  .seat-container {
-    min-width: 30px;
-    margin: 3px; /* Further reducing space */
-  }
-
-  .seat-icon {
-    font-size: 24px;
-  }
-
-  .seat-label {
-    font-size: 12px;
-  }
-
-  .curved-screen {
-    width: 75%;
-    font-size: 16px;
-  }
-
-  .confirm-button {
-    width: 60%;
-    
-  }
+    .seat-row {
+        justify-content: center;
+        /* Keeps seats centered */
+        gap: 5px;
+        /* Reducing gap */
+    }
+    .seat-container {
+        min-width: 30px;
+        margin: 3px;
+        /* Further reducing space */
+    }
+    .seat-icon {
+        font-size: 24px;
+    }
+    .seat-label {
+        font-size: 12px;
+    }
+    .curved-screen {
+        width: 75%;
+        font-size: 16px;
+    }
+    .confirm-button {
+        width: 60%;
+    }
 }
+
 
 /* ✅ Mobile Responsiveness */
+
 @media (max-width: 480px) {
-  .seat-row {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    justify-content: flex-start;
-  }
-
-  .seat-container {
-    min-width: 28px;
-  }
-
-  .seat-icon {
-    font-size: 20px;
-  }
-
-  .seat-label {
-    font-size: 10px;
-  }
-
-  .confirm-button {
-    font-size: 14px;
-    width: 80%;
-   
-  }
+    .seat-row {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+    .seat-container {
+        min-width: 28px;
+    }
+    .seat-icon {
+        font-size: 20px;
+    }
+    .seat-label {
+        font-size: 10px;
+    }
+    .confirm-button {
+        font-size: 14px;
+        width: 80%;
+    }
 }
 
+
 /* ✅ Tiny Screens */
+
 @media (max-width: 360px) {
-  .seat-container {
-    min-width: 23px;
-  }
-
-  .seat-icon {
-    font-size: 16px;
-  }
-
-  .seat-label {
-    font-size: 8px;
-  }
-
-  .confirm-button {
-    font-size: 12px;
-    width: 90%;
-    
-  }
+    .seat-container {
+        min-width: 23px;
+    }
+    .seat-icon {
+        font-size: 16px;
+    }
+    .seat-label {
+        font-size: 8px;
+    }
+    .confirm-button {
+        font-size: 12px;
+        width: 90%;
+    }
 }

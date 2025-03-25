@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../Middleware/Database');
 const code_generator = require('../Middleware/Generate_show_id');
+const Seat_Generator = require('../Middleware/Generate_Seats');
 const Auth = require('../Middleware/Authentication');
 const vendorRouter = express.Router();
 const execute_query = async(query, params) => {
@@ -29,11 +30,9 @@ vendorRouter.post('/add_Show', async(req, res) => {
     } = req.body;
 
     console.log(req.body);
-
     if (!theatre || !movieName || !releaseDate || !time || !screenNumber || !ticketPrice) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
-
     try {
         const show_id = code_generator(city, theatre, movieName); // Generates unique show_id
         const newShow = {
@@ -49,6 +48,7 @@ vendorRouter.post('/add_Show', async(req, res) => {
         };
 
         const result = await execute_query('INSERT INTO show_table SET ?', newShow);
+        Seat_Generator(show_id, ticketPrice);
         res.status(201).json({ message: 'Show added successfully', show_id });
     } catch (error) {
         console.error('Error adding show:', error);
@@ -89,8 +89,8 @@ vendorRouter.post('/login', async(req, res) => {
 });
 vendorRouter.get("/fetch_city", async(req, res) => {
     try {
-        const username = req.query.username;
-
+        const username = 'alice_smith';
+        console.log(username);
         const query = "Select user_id from user where username = ? and user_type='theater_owner'";
         const result = await execute_query(query, [username]);
         const user_id = result[0].user_id;
@@ -148,7 +148,7 @@ vendorRouter.get("/getAreas", async(req, res) => {
     const query = "SELECT user_id FROM user WHERE username = ? AND user_type = 'theater_owner'";
     const result = await execute_query(query, [owner_id]);
     if (result.length === 0) {
-        return res.status(404).json({ error: "User not found or not a theater owner" });
+        return res.status(402).json({ error: "User not found or not a theater owner" });
     }
     let owner_id1 = result[0].user_id;
     console.log(owner_id1)

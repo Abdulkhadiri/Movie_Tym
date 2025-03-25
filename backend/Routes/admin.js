@@ -23,8 +23,6 @@ adminRouter.post('/add_vendor', async(req, res) => {
         console.log(err);
         return res.status(400).send("failed");
     }
-
-
 })
 
 adminRouter.post('/delete_vendor/:id', async(req, res) => {

@@ -11,13 +11,17 @@ const sections = [
 ];
 
 const SeatSelection = () => {
+  
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [seatsBooked, setSeatsBooked] = useState([]);
     const { showId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const { movieName, theatreName, showTime, showDate } = location.state || {};
-
+    const totalPrice = selectedSeats.reduce((total, seat) => {
+    const section = sections.find(sec => sec.rows.some(row => seat.startsWith(row)));
+    return total + (section ? section.price : 0);
+}, 0);
     const fetchBookedSeats = useCallback(async () => {
         if (!showId) return;
         try {
@@ -33,7 +37,7 @@ const SeatSelection = () => {
             const data = await result.json();
             setSeatsBooked(data.map(seat => seat.seat_number));
         } catch (error) {
-            console.error('Error fetching booked seats:', error);
+            console.error('Error fetching booked seats:', error.status);
         }
     }, [showId]);
 
@@ -49,26 +53,69 @@ const SeatSelection = () => {
     };
 
     const handlePurchase = async () => {
-      console.log("Hekllo")
-        if (selectedSeats.length === 0) return;
-        try {
-            const token = localStorage.getItem('token')||'';
-           
-            if (!token) return;
+    if (selectedSeats.length === 0) return;
+    
+    try {
+        const token = localStorage.getItem('token') || '';
+        if (!token) return;
 
-            const result = await fetch(`${process.env.REACT_APP_API_URL}/seats/book_seats`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ seats: selectedSeats, show_id: showId })
-            });
+        // Step 1: Lock seats for payment
+        const bookResult = await fetch(`${process.env.REACT_APP_API_URL}/seats/book_seats`, {
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ username: 'alice_smith', seats: selectedSeats, show_id: showId })
+        });
 
-            if (!result.ok) return;
-            setSelectedSeats([]);
-            fetchBookedSeats();
-        } catch (error) {
-            console.error('Error booking seats:', error);
+        if (!bookResult.ok) {
+            console.error('Failed to lock seats');
+            return;
         }
-    };
+
+        // Step 2: Call dummy payment API (simulating a payment response)
+        const paymentResult = await fetch(`${process.env.REACT_APP_API_URL}/seats/dummy`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: 100 }) // Example amount
+        });
+
+        const paymentData = await paymentResult.json();
+        const paymentSuccess = paymentData.status === "success"; // Assuming success response
+
+        // Step 3: Confirm booking or release seats
+        const confirmResult = await fetch(`${process.env.REACT_APP_API_URL}/seats/confirm_booking`, {
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+                username: 'alice_smith', 
+                seats: selectedSeats, 
+                show_id: showId, 
+                paymentSuccess 
+            })
+        });
+
+        if (!confirmResult.ok) {
+            console.error('Failed to confirm booking');
+            return;
+        }
+
+
+
+        // Step 4: Update UI
+        setSelectedSeats([]);
+        window.location.reload();
+        fetchBookedSeats();
+
+    } catch (error) {
+        console.error('Error during purchase process:', error);
+    }
+};
+
 
     const isDisabled = (seatId) => seatsBooked.includes(seatId);
 
@@ -109,5 +156,4 @@ const SeatSelection = () => {
         </div>
     );
 };
-
 export default SeatSelection;

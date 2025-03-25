@@ -110,7 +110,6 @@ const MovieForm = () => {
     setAvailableScreens([]);
     if (theatre) fetchScreens(theatre);
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 

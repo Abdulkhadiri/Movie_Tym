@@ -10,7 +10,7 @@ const MovieDetails = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const { id } = useParams();
     const navigate = useNavigate();
-
+   
     useEffect(() => {
         fetch('/movies2.json')
             .then(response => response.json())
@@ -41,7 +41,7 @@ const MovieDetails = () => {
     };
 
     const onShowSelect = (show, movieName) => {
-        navigate(`/seats/${show.show_id}`, {
+        navigate(`/seats/${show.showId}`, {
             state: {
                 movieName,
                 theatreName: show.theatre,
@@ -80,7 +80,6 @@ const MovieDetails = () => {
                         onChange={onDateChange}
                     />
                 </div>
-
                 <div className="shows-container">
                     {selectedDate && shows.length === 0 && <div className='no-shows'>No shows available for the selected date.</div>}
                     {Array.isArray(shows) && shows.map(show => (
@@ -89,7 +88,8 @@ const MovieDetails = () => {
                             show={{
                                 theatre: show.theater_name,
                                 showTime: show.show_time,
-                                date: show.show_date
+                                date: show.show_date,
+                                showId: show.show_id
                             }}
                             movieName={movie.title}
                             onClick={onShowSelect}
@@ -100,5 +100,4 @@ const MovieDetails = () => {
         </div>
     );
 };
-
 export default MovieDetails;

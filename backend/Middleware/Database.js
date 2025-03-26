@@ -73,6 +73,13 @@ const createTables = async() => {
             seat_type ENUM('regular', 'premium', 'vip') NOT NULL,
             FOREIGN KEY (booking_id) REFERENCES booking(booking_id) ON DELETE CASCADE,
             FOREIGN KEY (show_id) REFERENCES show_table(show_id) ON DELETE CASCADE
+        );`,
+        `CREATE TABLE IF NOT EXISTS ratings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+            comment TEXT,
+            FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
         );`
     ];
 

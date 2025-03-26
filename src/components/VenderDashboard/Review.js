@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import './Review.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Review() {
   const [rating, setRating] = useState(0);
@@ -7,10 +9,20 @@ function Review() {
   const [comment, setComment] = useState('');
   const [isVisible, setIsVisible] = useState(true);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log('Rating:', rating);
-    console.log('Comment:', comment);
+    const user_name = sessionStorage.getItem('user');
+    console.log(user_name);
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/reviews`, {user_name:user_name,rating:rating,comment:comment})
+    if(response.status==200){
+      alert('Review submitted successfully');
+      navigate('/home');
+    }
+    else{
+      alert('Failed to submit review');
+    }
   };
 
   const handleClose = () => {

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./forgotpassword.css";
 import { useNavigate } from "react-router-dom";
-import { User2 } from "lucide-react";
+import { User2, X } from "lucide-react";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -213,6 +213,7 @@ const ForgotPassword = () => {
       {showOTPDialog && (
         <div className="dialog-overlay">
           <div className="dialog-content">
+          <X className="close-icon" onClick={() => setShowOTPDialog(false)} />
             <h3>Enter OTP</h3>
             <p>
               Please enter the OTP sent to your {method === "email" ? email : phone}
@@ -259,8 +260,12 @@ const ForgotPassword = () => {
       {showChangePasswordDialog && (
         <div className="dialog-overlay">
           <div className="dialog-content">
+          <X className="close-icon" onClick={() => setshowChangePasswordDialog(false)} />
+
+          <User2 style={{ width: '80px', height: '80px' }} />
             <label>New Password</label>
             <input
+            className="dialog-input"
               type="password"
               required
               value={Password}
@@ -268,12 +273,13 @@ const ForgotPassword = () => {
             />
             <label>Confirm Password</label>
             <input
+            className="dialog-input"
               type="password"
               required
               value={cnfpassword}
               onChange={(e) => setcnfPassword(e.target.value)}
             />
-            <button onClick={handleUpdate}>Update</button>
+            <button className="button" onClick={handleUpdate}>Update</button>
           </div>
           {errorUpdate && <div className="error-message">{errorUpdate}</div>}
         </div>

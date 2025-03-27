@@ -101,9 +101,10 @@ const Navbar = () => {
               <div className="location-dropdown">
                 <MapPin className="location-icon" />
                 <select value={Location} onChange={(e)=>setLocation(e.target.value)}>
-                  <option value="Hydreabad">Hyderabad</option>
+                  <option value="Hyderabad">Hyderabad</option>
                   <option value="Mumbai">Mumbai</option>
-                  <option value="Kolkatha">Kolkata</option>
+                  <option value="Kolkata">Kolkata</option>
+                  <option value="Pamur">Pamur</option>
                 </select>
               </div>
             </div>

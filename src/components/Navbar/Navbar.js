@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Search, LogOut, LogIn, Menu, X, Home, User, Phone, BookOpen, MapPin } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { DropdownContext } from "../Context";
 import "./navbar.css";
 
 const Navbar = () => {
   const [user, setUser] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const {Location,setLocation} = useContext(DropdownContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -98,10 +100,10 @@ const Navbar = () => {
               <Link to="/private-booking">Private Booking</Link>
               <div className="location-dropdown">
                 <MapPin className="location-icon" />
-                <select>
-                  <option value="Hydreabad">Hydreabad</option>
+                <select value={Location} onChange={(e)=>setLocation(e.target.value)}>
+                  <option value="Hydreabad">Hyderabad</option>
                   <option value="Mumbai">Mumbai</option>
-                  <option value="Kolkatha">Kolkatha</option>
+                  <option value="Kolkatha">Kolkata</option>
                 </select>
               </div>
             </div>

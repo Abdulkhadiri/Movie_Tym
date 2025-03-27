@@ -13,7 +13,7 @@ const execute_query = async(query, params) => {
 
 adminRouter.post('/add_vendor', async(req, res) => {
 
-    const { name, location, owner_id, city, state, pincode, total_seats, total_screens } = req.body;
+    const { name,location,city, state, pincode, total_screens, total_seats,parking,foodcourt,wheelchair,dolby_sound,restaurant,gaming_zone,vip_lounge,screen_2d,screen_3d,screen_4dx,screen_imax,screen_vip  } = req.body;
     try {
         const query = "INSERT INTO theater(name,location,owner_id,city,state,pincode,total_seats,total_screens) values (?,?,?,?,?,?,?,?) ";
         const params = [name, location, owner_id, city, state, pincode, total_seats, total_screens]
@@ -25,8 +25,8 @@ adminRouter.post('/add_vendor', async(req, res) => {
     }
 })
 
-adminRouter.post('/delete_vendor/:id', async(req, res) => {
-    const { vendor_id, theater_id } = req.params;
+adminRouter.post('/delete_vendor', async(req, res) => {
+    const { vendor_id, theater_id } = req.body;
     if (!id) return res.status(400).send("id cannot be emoty")
     try {
         const query = "delete from table theater where owner_id = ? AND theatre_id=? "
@@ -38,15 +38,16 @@ adminRouter.post('/delete_vendor/:id', async(req, res) => {
 
 })
 
-adminRouter.post('/update_vendor/:id', async(req, res) => {
-    const { id } = req.params;
-    const { city, state, pincode, address, total_screens, total_seats } = req.body;
+adminRouter.post('/update_vendor', async(req, res) => {
+    const { id } = req.body;
+    const { name,location,city, state, pincode, total_screens, total_seats,parking,foodcourt,wheelchair,dolby_sound,restaurant,gaming_zone,vip_lounge,screen_2d,screen_3d,screen_4dx,screen_imax,screen_vip } = req.body;
     try {
-        const query = 'Insert into table theater(city,state,pincode,address,total_screens,total_screens) into  values (?,?,?,?)';
-        const results = await execute_query(query, [city, state, pincode, address, total_screens, total_seats]);
+        const query = 'update table SET name=?,location=?,city=?,state=?,pincode=?,total_screens=?,total_seats=?,database_parking=?, food_court=?,wheelchair_access=?,dolby_sound=?,restaurant=?,gaming_zone=?,vip_lounge=?,screen_2d=?,screen_3d=?,screen_4dx=?,screen_imax=?,screen_vip=? where theater_id = ?';
+        const results = await execute_query(query, [name,location,city, state, pincode, total_screens, total_seats,parking,foodcourt,wheelchair,dolby_sound,restaurant,gaming_zone,vip_lounge,screen_2d,screen_3d,screen_4dx,screen_imax,screen_vip,id]);
         return res.status(200).send("vendor updates successfully")
 
-    } catch (err) {
+    } 
+    catch (err) {
         return res.status(400).send("updation failed");
     }
 

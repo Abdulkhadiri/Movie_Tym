@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Star } from 'lucide-react';
 import './moviedetails.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import ShowCard from './ShowCard';
+import { DropdownContext } from '../Context';
 
 const MovieDetails = () => {
     const [movies, setMovies] = useState([]);
     const [shows, setShows] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
     const { id } = useParams();
+    const {Location} = useContext(DropdownContext);
     const navigate = useNavigate();
    
     useEffect(() => {

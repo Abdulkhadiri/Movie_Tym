@@ -30,31 +30,58 @@ vendorRouter.post('/add_Show', async(req, res) => {
     } = req.body;
 
     console.log(req.body);
+
     if (!theatre || !movieName || !releaseDate || !time || !screenNumber || !ticketPrice) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
+
     try {
-        const show_id = code_generator(city, theatre, movieName); // Generates unique show_id
+        // Convert time to proper format for calculation
+        const showTime = new Date(`${releaseDate}T${time}`);
+        const endTime = new Date(showTime.getTime() + 2 * 60 * 60 * 1000); // Add 2 hours
+
+        // Query to check for conflicting shows
+        const checkQuery = `
+            SELECT show_id FROM show_table 
+            WHERE theater_id = ? AND screen = ? AND show_date = ?
+            AND (
+                (show_time >= ? AND show_time < ?) OR 
+                (show_time <= ? AND DATE_ADD(show_time, INTERVAL 2 HOUR) > ?)
+            )
+        `;
+        const existingShow = await execute_query(checkQuery, [
+            theatre, screenNumber, releaseDate, showTime, endTime, showTime, showTime
+        ]);
+
+        if (existingShow.length > 0) {
+            return res.status(409).json({ error: 'A movie is already scheduled for this screen within the next 2 hours.' });
+        }
+
+        // Generate unique show_id
+        const show_id = code_generator(city, theatre, movieName);
         const newShow = {
             show_id,
-            theater_id: theatre, // Matches theater_id in show_table
+            theater_id: theatre,
             movie_name: movieName,
             show_date: releaseDate,
             show_time: time,
-            Language: language, // Matches case in DB
-            Movie_Type: movieType, // New field added
-            screen: screenNumber, // Matches screen column
+            Language: language,
+            Movie_Type: movieType,
+            screen: screenNumber,
             price: ticketPrice
         };
 
-        const result = await execute_query('INSERT INTO show_table SET ?', newShow);
+        // Insert new show
+        await execute_query('INSERT INTO show_table SET ?', newShow);
         Seat_Generator(show_id, ticketPrice);
         res.status(201).json({ message: 'Show added successfully', show_id });
+
     } catch (error) {
         console.error('Error adding show:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 vendorRouter.get('/theaters/:city', async(req, res) => {

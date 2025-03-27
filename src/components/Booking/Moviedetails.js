@@ -23,6 +23,10 @@ const MovieDetails = () => {
     const movie = movies.find(m => m.id === parseInt(id));
 
     const fetchShows = (date) => {
+
+        console.log(movie.title);
+        console.log(date);
+        console.log(Location);
         if (movie && date) {
             fetch(`http://localhost:5000/Theater_Generation/shows?movie_name=${movie.title}&date=${date}&Location=${Location}`)
                 .then(response => response.json())

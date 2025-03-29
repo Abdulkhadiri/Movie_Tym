@@ -6,8 +6,11 @@ axios
 nodemailer
 twilio 
 qrcode.react
-npm install @fortawesome/react-fontawesome
-npm install @fortawesome/free-solid-svg-icons
-npm install uuid
-npm install react-router-dom qrcode.react jspdf
-npm install html2canvas
+@fortawesome/react-fontawesome 
+@fortawesome/free-solid-svg-icons
+uuid
+react-router-dom qrcode.react jspdf
+html2canvas
+multer
+cloudinary
+@cloudinary/react @cloudinary/url-gen

@@ -97,7 +97,7 @@ function LoginSignup() {
       setSignUpPassword("");
       setSignUpConfirmPassword("");
       
-      // Switch to login tab after successful signup
+      
       setActiveTab("login");
     } catch (error) {
       setSignupError(

@@ -34,6 +34,16 @@ const createTables = async() => {
             user_type ENUM('customer', 'theater_owner') NOT NULL,
             phone_number VARCHAR(20) NOT NULL
         );`,
+        `CREATE TABLE IF NOT EXISTS private_booking (
+            id INT SERIAL PRIMARY KEY,
+            user_id INT REFERENCES user(user_id) ON DELETE CASCADE,
+            location VARCHAR(255) NOT NULL,
+            no_of_people INT NOT NULL,
+            date DATE NOT NULL,
+            time TIME NOT NULL,
+            price DECIMAL(10,2) NOT NULL
+        );`,
+        
         `CREATE TABLE IF NOT EXISTS theater (
             theater_id int NOT NULL AUTO_INCREMENT,
             name varchar(100) NOT NULL,

@@ -16,6 +16,11 @@ app.use(cors());
 const adminRouter = require("./admin");
 app.use("/admin", adminRouter);
 
+const privaterouter = require("./privatebooking")
+app.use("/privatebooking", privaterouter);
+
+
+
 const Seats = require("./Seats");
 app.use("/seats", Seats);
 

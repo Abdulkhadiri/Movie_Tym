@@ -22,6 +22,9 @@ const MovieForm = () => {
   const [areas, setAreas] = useState([]);
   const [availableTheatres, setAvailableTheatres] = useState([]);
   const [availableScreens, setAvailableScreens] = useState([]);
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   const username = sessionStorage.getItem("user") || 'alice_smith';
   const token = sessionStorage.getItem("token") || ""; 
 
@@ -137,6 +140,37 @@ const MovieForm = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
+  
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    uploadData.append("upload_preset", "MOVIE_TYM");
+
+    try {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload`, {
+            method: "POST",
+            body: uploadData,
+        });
+        const data = await response.json();
+        if(data.secure_url){
+            setImage(data.secure_url);
+            setImageUrl(data.secure_url);
+            setFormData(prev => ({ ...prev, movieImage: data.secure_url }));
+        }
+        else{
+          console.log("Error uploading image");
+        }
+        
+    } catch (error) {
+        console.error("Upload failed:", error);
+    } finally {
+        setLoading(false);
+    }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -260,12 +294,14 @@ const MovieForm = () => {
                 <option key={index} value={screen}>Screen {screen}</option>
               ))}
             </select>
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
+
+            
           </div>
 
           {[
             { label: 'Release Date', name: 'releaseDate', type: 'date' },
             { label: 'Time', name: 'time', type: 'time' },
-            { label: 'Movie Image URL', name: 'movieImage', type: 'text' },
             { label: 'Ticket Price', name: 'ticketPrice', type: 'number' },
             { label: 'Language', name: 'language', type: 'text' }
           ].map(field => (

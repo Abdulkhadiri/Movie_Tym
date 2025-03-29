@@ -3,6 +3,8 @@ import { Calendar, Clock, MapPin, Users, DollarSign, CheckCircle } from 'lucide-
 import './privatebooking.css';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
+import axios from "axios";
+
 
 
 const PrivateBooking = () => {
@@ -16,6 +18,7 @@ const PrivateBooking = () => {
   
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [availabilityStatus, setAvailabilityStatus] = useState(null);
+  const [message,setMessage]=useState("");
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,34 +38,61 @@ const PrivateBooking = () => {
     
     const diffMs = end - start;
     const diffHrs = diffMs / (1000 * 60 * 60);
+
+
     
     return diffHrs;
   };
   
   const calculatePrice = () => {
     const hours = calculateHours();
+
+    if (hours < 3) {
+      alert("Minimum booking duration is 3 hours.");
+      return;
+    }
+
     const baseRate = 25000; 
     const peopleRate = formData.people ? parseInt(formData.people) * 550 : 0; 
     
     return (baseRate + peopleRate) * hours;
   };
   
-  const checkAvailability = (e) => {
+  const checkAvailability = async(e) => {
+
     e.preventDefault();
     setCheckingAvailability(true);
-    
-    setTimeout(() => {
-      const isAvailable = Math.random() > 0.3;
-      setAvailabilityStatus(isAvailable);
-      setCheckingAvailability(false);
-    }, 1500);
-  };
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/privatebooking/check-availability`, {
+          location: formData.location,
+          date: formData.date,
+          time: formData.startTime,
+      });
+     
+        setAvailabilityStatus(res.data.available);
+      setMessage(res.data.message);
+  } catch (error) {
+      console.error("Error checking availability:", error);
+      setMessage("Error checking availability.");
+  }
+  finally{
+    setCheckingAvailability(false);
+  }
+ 
+};
   
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Booking submitted successfully!');
-  };
-  
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (!formData.people || !formData.location || !formData.date || !formData.startTime || !formData.endTime) {
+    alert("Please fill in all fields before submitting.");
+    return;
+  }
+  alert("Booking submitted successfully!");
+};
+
+
+
+
   return (
     <div className="booking-page">
       <Navbar />
@@ -89,7 +119,6 @@ const PrivateBooking = () => {
                 required
               />
             </div>
-            
             <div className="form-group">
               <label>
                 <MapPin className="form-icon" />
@@ -240,7 +269,7 @@ const PrivateBooking = () => {
       </div>
       <Footer />
     </div>
-  );
+  )
 };
 
 export default PrivateBooking;

@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const Seats = express.Router();
 const db = require('../Middleware/Database');
 const booking_id = require('../Middleware/Booking_ud');

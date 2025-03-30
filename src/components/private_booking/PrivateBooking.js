@@ -38,19 +38,12 @@ const PrivateBooking = () => {
     
     const diffMs = end - start;
     const diffHrs = diffMs / (1000 * 60 * 60);
-
-
-    
     return diffHrs;
   };
   
   const calculatePrice = () => {
     const hours = calculateHours();
-
-    if (hours < 3) {
-      alert("Minimum booking duration is 3 hours.");
-      return;
-    }
+    
 
     const baseRate = 25000; 
     const peopleRate = formData.people ? parseInt(formData.people) * 550 : 0; 
@@ -83,16 +76,18 @@ const PrivateBooking = () => {
   
 const handleSubmit = (e) => {
   e.preventDefault();
+  const hours = calculateHours();
+  if (hours < 3) {
+    alert("Minimum booking duration is 3 hours.");
+    return 0; 
+  }
+
   if (!formData.people || !formData.location || !formData.date || !formData.startTime || !formData.endTime) {
     alert("Please fill in all fields before submitting.");
     return;
   }
   alert("Booking submitted successfully!");
 };
-
-
-
-
   return (
     <div className="booking-page">
       <Navbar />
@@ -204,7 +199,8 @@ const handleSubmit = (e) => {
                 </div>
                 <div className="price-row total">
                   <span>Total Estimated Price:</span>
-                  <span>{calculatePrice().toFixed(2)} /-</span>
+                  <span>{calculatePrice() > 0 ? calculatePrice().toFixed(2) : '0.00'} /-</span>
+
                 </div>
               </div>
             </div>

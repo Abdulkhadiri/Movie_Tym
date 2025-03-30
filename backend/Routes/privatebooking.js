@@ -2,6 +2,10 @@ const express = require('express');
 require('dotenv').config();
 const app = express();
 
+const db = require('../Middleware/Database')
+
+
+
 const privaterouter = express.Router();
 
 
@@ -39,17 +43,12 @@ privaterouter.post("/check-availability", async (req, res) => {
         if (!location || !date || !time) {
             return res.status(400).json({ message: "Missing required fields" });
         }
+        const query = "SELECT * FROM private_booking WHERE location = ? AND date = ? AND time BETWEEN ? AND ADDTIME(?, '03:00:00')"
+        
+        
+        const result = await execute_query(query, [location, date, time,time]);
 
-        const query = `
-            SELECT * FROM private_booking 
-            WHERE location = $1
-            AND date = $2
-            AND time BETWEEN $3 AND ($3::TIME + INTERVAL '3 hours')
-        `;
-
-        const result = await execute_query(query, [location, date, time]);
-
-        if (result.rows.length > 0) {
+        if (result.length > 0) {
             return res.json({ available: false, message: "Not Available" });
         } else {
             return res.json({ available: true, message: "Available" });

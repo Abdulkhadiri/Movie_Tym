@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    multipleStatements: true
+    
 });
 
 connection.connect((err) => {
@@ -34,14 +34,16 @@ const createTables = async() => {
             user_type ENUM('customer', 'theater_owner') NOT NULL,
             phone_number VARCHAR(20) NOT NULL
         );`,
+
         `CREATE TABLE IF NOT EXISTS private_booking (
-            id INT SERIAL PRIMARY KEY,
-            user_id INT REFERENCES user(user_id) ON DELETE CASCADE,
+            id INT AUTO_INCREMENT  PRIMARY KEY,
+            user_id INT NOT NULL,
             location VARCHAR(255) NOT NULL,
             no_of_people INT NOT NULL,
             date DATE NOT NULL,
             time TIME NOT NULL,
-            price DECIMAL(10,2) NOT NULL
+            price DECIMAL(10,2) NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
         );`,
         
         `CREATE TABLE IF NOT EXISTS theater (

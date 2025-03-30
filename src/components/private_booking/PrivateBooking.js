@@ -14,11 +14,13 @@ const PrivateBooking = () => {
     date: '',
     startTime: '',
     endTime: '',
+    price:''
   });
   
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [availabilityStatus, setAvailabilityStatus] = useState(null);
   const [message,setMessage]=useState("");
+  const [price,setPrice]=useState(0);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +50,9 @@ const PrivateBooking = () => {
     const baseRate = 25000; 
     const peopleRate = formData.people ? parseInt(formData.people) * 550 : 0; 
     
-    return (baseRate + peopleRate) * hours;
+    const price =  (baseRate + peopleRate) * hours;
+    setPrice(price);
+    return price;
   };
   
   const checkAvailability = async(e) => {
@@ -74,14 +78,35 @@ const PrivateBooking = () => {
  
 };
   
-const handleSubmit = (e) => {
+const handleSubmit = async(e) => {
   e.preventDefault();
   const hours = calculateHours();
+  const user = sessionStorage.getItem("user") || "defaultUserId";
   if (hours < 3) {
     alert("Minimum booking duration is 3 hours.");
     return 0; 
   }
-
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/privatebooking/add_details`, {
+        email:user,
+        no_of_people: formData.people,
+        location: formData.location,
+        date: formData.date,
+        time: formData.startTime,
+        price:price,
+       
+    });
+    if(res.status === 200){
+      alert("Booking submitted successfully!");
+    }
+    else{
+      alert("Booking submission failed. Please try again.");
+    }
+  }
+  catch (error) {
+    console.error("Error submitting booking:", error);
+    alert("Error submitting booking. Please try again.");
+  }
   if (!formData.people || !formData.location || !formData.date || !formData.startTime || !formData.endTime) {
     alert("Please fill in all fields before submitting.");
     return;
@@ -199,7 +224,7 @@ const handleSubmit = (e) => {
                 </div>
                 <div className="price-row total">
                   <span>Total Estimated Price:</span>
-                  <span>{calculatePrice() > 0 ? calculatePrice().toFixed(2) : '0.00'} /-</span>
+                  <span >{calculatePrice() > 0 ? calculatePrice().toFixed(2) : '0.00'} /-</span>
 
                 </div>
               </div>

@@ -4,6 +4,7 @@ import "./forgotpassword.css";
 import { useNavigate } from "react-router-dom";
 import { User2, X } from "lucide-react";
 
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");

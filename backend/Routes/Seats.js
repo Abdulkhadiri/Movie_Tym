@@ -125,6 +125,26 @@ Seats.get("/seats_booked", async(req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+Seats.get('/price', async(req, res) => {
+    const { show_id } = req.query;
+    console.log(show_id)
+    if (!show_id) {
+        return res.status(400).json({ error: 'Show ID is required' });
+    }
+    try {
+        const result = await execute_query('SELECT price FROM show_table WHERE show_id = ?', [show_id]);
+        console.log(result[0])
+
+        const basePrice = result[0];
+        res.json(basePrice);
+    } catch (error) {
+        console.error('Error fetching seat prices:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 Seats.post("/dummy", async(req, res) => {
     const paymentResponse = {
         status: "success",

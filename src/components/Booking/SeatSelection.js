@@ -88,7 +88,6 @@ const SeatSelection = () => {
         if (showId) fetchBookedSeats();
         return () => setSeatsBooked([]);
     }, [showId, fetchBookedSeats]);
-
     const handleSeatSelection = (seatId) => {
         setSelectedSeats(prev =>
             prev.includes(seatId) ? prev.filter(seat => seat !== seatId) : [...prev, seatId]
@@ -198,5 +197,4 @@ const SeatSelection = () => {
         </div>
     );
 };
-
 export default SeatSelection;

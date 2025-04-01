@@ -160,4 +160,50 @@ Seats.post("/dummy", async(req, res) => {
 
     res.json(paymentResponse);
 });
+Seats.get("/get_ticket", async(req, res) => {
+    try {
+        const { show_id } = req.query;
+        console.log("Fetching details for show_id:", show_id);
+
+        // Step 1: Get screen, show_date, show_time, theater_id, and movie_name from show_table
+        const query1 = "SELECT theater_id, screen, show_date, show_time, movie_name FROM show_table WHERE show_id = ?";
+        const show_details = await execute_query(query1, [show_id]);
+
+        if (show_details.length === 0) {
+            return res.status(404).json({ message: "Show details not found" });
+        }
+
+        const { theater_id, screen, show_date, show_time, movie_name } = show_details[0];
+
+        // Step 2: Fetch theater_name and full address from theater_table
+        const query2 = `
+            SELECT name AS theater_name, 
+                   CONCAT(city, ', ', location, ', ', state, ', ', pincode) AS address 
+            FROM theater 
+            WHERE theater_id = ?`;
+        const theater_details = await execute_query(query2, [theater_id]);
+
+        if (theater_details.length === 0) {
+            return res.status(404).json({ message: "Theater details not found" });
+        }
+
+        const { theater_name, address } = theater_details[0];
+
+        // Step 3: Return the combined result
+        res.json({
+            theater_name,
+            address,
+            screen,
+            show_date,
+            show_time,
+            movie_name
+        });
+
+    } catch (error) {
+        console.error("Error fetching seat details:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+
 module.exports = Seats;

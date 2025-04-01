@@ -49,6 +49,7 @@ const createTables = async() => {
         `CREATE TABLE IF NOT EXISTS theater (
             theater_id int NOT NULL AUTO_INCREMENT,
             name varchar(100) NOT NULL,
+            owner_licence varchar(100) NOT NULL,
             location varchar(100) NOT NULL,
             owner_id int DEFAULT NULL,
             city varchar(100) NOT NULL,
@@ -60,7 +61,6 @@ const createTables = async() => {
             food_court tinyint(1) NOT NULL DEFAULT 0,
             wheelchair_access tinyint(1) NOT NULL DEFAULT 0,
             dolby_sound tinyint(1) NOT NULL DEFAULT 0,
-            imax tinyint(1) NOT NULL DEFAULT 0,
             restaurant tinyint(1) NOT NULL DEFAULT 0,
             gaming_zone tinyint(1) NOT NULL DEFAULT 0,
             vip_lounge tinyint(1) NOT NULL DEFAULT 0,
@@ -69,7 +69,6 @@ const createTables = async() => {
             screen_4dx tinyint(1) NOT NULL DEFAULT 0,
             screen_imax tinyint(1) NOT NULL DEFAULT 0,
             screen_vip tinyint(1) NOT NULL DEFAULT 0,
-            dolby_atmos tinyint(1) NOT NULL DEFAULT 0,
             PRIMARY KEY (theater_id),
             KEY theater_fk_owner (owner_id),
             CONSTRAINT theater_fk_owner FOREIGN KEY (owner_id) REFERENCES user (user_id) ON DELETE SET NULL

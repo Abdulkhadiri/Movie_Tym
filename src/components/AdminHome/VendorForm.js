@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import './VendorForm.css';
+import axios from 'axios';
 
 const VendorForm = ({ onAddVendor }) => {
   const [theaterData, setTheaterData] = useState({
     ownerName: '',
     email: '',
+    password:'',
     phone: '',
+    licenseNumber: '',
     theaterName: '',
     address: '',
     city: '',
@@ -13,72 +16,39 @@ const VendorForm = ({ onAddVendor }) => {
     pincode: '',
     totalScreens: '',
     totalSeats: '',
-    facilities: [],
-    screenTypes: [],
-    licenseNumber: '',
-    openingHours: '',
-    closingHours: '',
-    status: 'active'
   });
+  // Individual state variables for checkboxes
+  const [parking, setParking] = useState(0);
+  const [foodCourt, setFoodCourt] = useState(0);
+  const [wheelchairAccess, setWheelchairAccess] = useState(0);
+  const [dolbySound, setDolbySound] = useState(0);
+  const [restaurant, setRestaurant] = useState(0);
+  const [gamingZone, setGamingZone] = useState(0);
+  const [vipLounge, setVipLounge] = useState(0);
 
-  const facilities = [
-    'Parking',
-    'Food Court',
-    'Wheelchair Access',
-    'Dolby Sound',
-    'IMAX',
-    'Restaurant',
-    'Gaming Zone',
-    'VIP Lounge'
-  ];
-
-  const screenTypes = [
-    '2D',
-    '3D',
-    '4DX',
-    'IMAX',
-    'VIP Screen',
-    'Dolby Atmos'
-  ];
+  const [screen2D, setScreen2D] = useState(0);
+  const [screen3D, setScreen3D] = useState(0);
+  const [screen4DX, setScreen4DX] = useState(0);
+  const [screenIMAX, setScreenIMAX] = useState(0);
+  const [vipScreen, setVipScreen] = useState(0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddVendor({ ...theaterData, id: Date.now() });
-    setTheaterData({
-      ownerName: '',
-      email: '',
-      phone: '',
-      theaterName: '',
-      address: '',
-      city: '',
-      state: '',
-      pincode: '',
-      totalScreens: '',
-      totalSeats: '',
-      facilities: [],
-      screenTypes: [],
-      licenseNumber: '',
-      openingHours: '',
-      closingHours: '',
-      status: 'active'
-    });
+    
+    const formData = {
+      ...theaterData,
+      facilities: { parking, foodCourt, wheelchairAccess, dolbySound, restaurant, gamingZone, vipLounge },
+      screenTypes: { screen2D, screen3D, screen4DX, screenIMAX, vipScreen }
+    };
+    
+    onAddVendor({ ...formData, id: Date.now() });
+    axios.post(`${process.env.REACT_APP_API_URL}/admin/add_vendor`, formData).then(res => console.log("Got error mams"));
+    console.log(formData);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTheaterData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  const handleCheckboxChange = (type, value) => {
-    setTheaterData(prevData => ({
-      ...prevData,
-      [type]: prevData[type].includes(value)
-        ? prevData[type].filter(item => item !== value)
-        : [...prevData[type], value]
-    }));
+    setTheaterData(prevData => ({ ...prevData, [name]: value }));
   };
 
   return (
@@ -105,6 +75,16 @@ const VendorForm = ({ onAddVendor }) => {
               type="email"
               name="email"
               value={theaterData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="text"
+              name="password"
+              value={theaterData.password}
               onChange={handleChange}
               required
             />
@@ -220,62 +200,29 @@ const VendorForm = ({ onAddVendor }) => {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Opening Hours</label>
-              <input
-                type="time"
-                name="openingHours"
-                value={theaterData.openingHours}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Closing Hours</label>
-              <input
-                type="time"
-                name="closingHours"
-                value={theaterData.closingHours}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
+        </div>
           {/* Facilities */}
-          <div className="form-group">
-            <label>Facilities Available</label>
-            <div className="checkbox-group">
-              {facilities.map(facility => (
-                <label key={facility} className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={theaterData.facilities.includes(facility)}
-                    onChange={() => handleCheckboxChange('facilities', facility)}
-                  />
-                  {facility}
-                </label>
-              ))}
-            </div>
+          <div className="form-sect">
+          <h4 className="sec-tit">Facilities Available</h4>
+          <div className='checkbo'>
+          <label><input type="checkbox" checked={parking} onChange={() => setParking(parking ? 0 : 1)} /> Parking</label>
+          <label><input type="checkbox" checked={foodCourt} onChange={() => setFoodCourt(foodCourt ? 0 : 1)} /> Food Court</label>
+          <label><input type="checkbox" checked={wheelchairAccess} onChange={() => setWheelchairAccess(wheelchairAccess ? 0 : 1)} /> Wheelchair Access</label>
+          <label><input type="checkbox" checked={dolbySound} onChange={() => setDolbySound(dolbySound ? 0 : 1)} /> Dolby Sound</label>
+          <label><input type="checkbox" checked={restaurant} onChange={() => setRestaurant(restaurant ? 0 : 1)} /> Restaurant</label>
+          <label><input type="checkbox" checked={gamingZone} onChange={() => setGamingZone(gamingZone ? 0 : 1)} /> Gaming Zone</label>
+          <label><input type="checkbox" checked={vipLounge} onChange={() => setVipLounge(vipLounge ? 0 : 1)} /> VIP Lounge</label>
           </div>
+        </div>
 
-          {/* Screen Types */}
-          <div className="form-group">
-            <label>Screen Types</label>
-            <div className="checkbox-group">
-              {screenTypes.map(type => (
-                <label key={type} className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={theaterData.screenTypes.includes(type)}
-                    onChange={() => handleCheckboxChange('screenTypes', type)}
-                  />
-                  {type}
-                </label>
-              ))}
-            </div>
+        <div className="form-sect">
+          <h4 className="sec-tit">Screen Types</h4>
+          <div className='checkbo'>
+          <label><input type="checkbox" checked={screen2D} onChange={() => setScreen2D(screen2D ? 0 : 1)} /> 2D</label>
+          <label><input type="checkbox" checked={screen3D} onChange={() => setScreen3D(screen3D ? 0 : 1)} /> 3D</label>
+          <label><input type="checkbox" checked={screen4DX} onChange={() => setScreen4DX(screen4DX ? 0 : 1)} /> 4DX</label>
+          <label><input type="checkbox" checked={screenIMAX} onChange={() => setScreenIMAX(screenIMAX ? 0 : 1)} /> IMAX</label>
+          <label><input type="checkbox" checked={vipScreen} onChange={() => setVipScreen(vipScreen ? 0 : 1)} /> VIP Screen</label>
           </div>
         </div>
 

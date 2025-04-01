@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import VendorForm from './VendorForm';
 import VendorList from './VendorList';
 import './AdminHome.css';
@@ -6,6 +6,16 @@ import './AdminHome.css';
 function AdminHome() {
   const [vendors, setVendors] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  useEffect(() => {
+    const fetchVendors = async () => {
+      const response = await fetch('/admin/display_vendors');
+      const data = await response.json();
+      setVendors(data);
+      console.log(vendors)
+    };
+  
+    fetchVendors();
+  }, []);
 
   const handleAddVendor = (newVendor) => {
     setVendors([...vendors, newVendor]);

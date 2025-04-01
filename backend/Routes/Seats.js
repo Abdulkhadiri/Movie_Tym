@@ -118,7 +118,6 @@ Seats.get("/seats_booked", async(req, res) => {
         // Fetch only seats that are not available
         const query = "SELECT seat_number FROM seat WHERE show_id = ? AND status <> 'available'";
         const result = await execute_query(query, [show_id]);
-        console.log(result);
         res.status(200).json(result);
     } catch (error) {
         console.error('Database query failed:', error);
@@ -128,21 +127,29 @@ Seats.get("/seats_booked", async(req, res) => {
 
 Seats.get('/price', async(req, res) => {
     const { show_id } = req.query;
-    console.log(show_id)
+
     if (!show_id) {
-        return res.status(400).json({ error: 'Show ID is required' });
+        return res.status(400).json({ error: "Show ID is required" });
     }
+
     try {
         const result = await execute_query('SELECT price FROM show_table WHERE show_id = ?', [show_id]);
-        console.log(result[0])
 
-        const basePrice = result[0];
-        res.json(basePrice);
+        if (result.length === 0) {
+            return res.status(404).json({ error: "Show not found" });
+        }
+
+        console.log("Sending JSON Response:", { price: result[0].price });
+        res.setHeader("Content-Type", "application/json");
+        console.log(res) // ✅ Ensure JSON content type
+        res.status(200).json(result[0]);
+
     } catch (error) {
-        console.error('Error fetching seat prices:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error("Error fetching seat prices:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
+
 
 
 Seats.post("/dummy", async(req, res) => {

@@ -11,6 +11,7 @@ const SeatSelection = () => {
     const { showId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const[booking_id,setBooking_id]=useState(null)
     const user = sessionStorage.getItem("user");
     const token = sessionStorage.getItem("token");
     const { movieName, theatreName, showTime, showDate } = location.state || {};
@@ -133,13 +134,17 @@ const SeatSelection = () => {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: user, seats: selectedSeats, show_id: showId, paymentSuccess })
             });
-
             if (!confirmResult.ok) {
                 console.error('Failed to confirm booking');
                 return;
             }
-
-            // Step 4: Update UI
+            const data = await confirmResult.json();
+            const booking_id=data.book_id;
+            console.log(booking_id);
+            const encodedBookingId = encodeURIComponent(data.book_id);
+            console.log(encodedBookingId);
+const encodedSeats = encodeURIComponent(JSON.stringify(selectedSeats));
+navigate(`/ticket/${showId}/${encodedBookingId}/${encodedSeats}`);
             setSelectedSeats([]);
             window.location.reload();
             fetchBookedSeats();
@@ -161,7 +166,6 @@ const SeatSelection = () => {
         <div>
             <h2 className='he'>Select Your Seats</h2>
             <div className="curved-screen">SCREEN</div>
-
             {sections.map((section) => (
                 <div key={section.name} className="section">
                     <h3 className='hed'>{section.name} - ₹{section.price}</h3>

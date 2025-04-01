@@ -88,7 +88,12 @@ Seats.post("/confirm_booking", async(req, res) => {
             const updateParams = [book_id, show_id, ...seats];
             await execute_query(updateQuery, updateParams);
 
-            res.status(200).json({ message: "Payment successful, seats booked" });
+            res.status(200).json({
+                success: true,
+                message: "Payment successful, seats booked",
+                book_id,
+                timestamp: new Date().toISOString(),
+            });
 
         } else {
             // If payment fails, release the seats back to 'available'

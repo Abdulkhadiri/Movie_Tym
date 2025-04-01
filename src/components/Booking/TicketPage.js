@@ -7,10 +7,11 @@ import axios from "axios";
 import "./TicketPage.css";
 
 const TicketPage = () => {
-  const { show_id, booking_id } = useParams(); // ✅ Get URL parameters
+  let { show_id, booking_id,selectedSeats } = useParams(); // ✅ Get URL parameters
   const location = useLocation();
-  const { selectedSeats, totalCost } = location.state || {};
-
+  console.log(show_id, booking_id, selectedSeats);
+  
+  const totalCost =  0; // ✅ Get total cost from state or default to 0
   const ticketRef = useRef(null);
   const [ticketData, setTicketData] = useState({
     movieName: "",
@@ -64,21 +65,15 @@ const TicketPage = () => {
         <p><strong>Screen:</strong> {ticketData.screenNumber}</p>
         <p><strong>Show Time:</strong> {ticketData.showTime}</p>
         <p><strong>Date:</strong> {ticketData.showDate}</p>
-        <p><strong>Seats:</strong> {selectedSeats?.join(", ") || "No seats selected"}</p>
-        <p><strong>Total Cost:</strong> ₹{totalCost}</p>
+        <p><strong>Seats:</strong> {selectedSeats || "No seats selected"}</p>
+        
 
         {/* QR Code Display */}
         <div className="qr-code-container">
-          <QRCodeCanvas 
-            value={JSON.stringify({
-              show_id,
-              booking_id,
-              ...ticketData,
-              selectedSeats,
-              totalCost
-            })} 
-            size={100} 
-          />
+        <QRCodeCanvas 
+  value={`${window.location}/ticket/${show_id}/${booking_id}/${selectedSeats}?download=true`} 
+  size={100} 
+/>
         </div>
       </div>
 

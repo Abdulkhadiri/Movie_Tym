@@ -17,34 +17,51 @@ const SeatSelection = () => {
 
     // Fetch the base price from API
     const fetchBasePrice = useCallback(async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/seats/price?show_id=${showId}`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            
-            if (!response.ok) {
-                console.error('Failed to fetch base price');
-                return;
+    try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/seats/price?show_id=${showId}`, {
+            method: 'GET',
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'  // ✅ Move inside headers
             }
+        });
 
-            const data = await response.json();
-            const input = data.price;
-            const basePrice = parseInt(input, 10); 
-            // Example API response: { "price": 200 }
-
-            // Adjust prices dynamically
-            const updatedSections = [
-                { name: 'Orchestra', price: basePrice + 50, rows: ['A', 'B', 'C'], seatsPerRow: 10 },
-                { name: 'Mezzanine', price: basePrice + 100, rows: ['D', 'E', 'F'], seatsPerRow: 10 },
-                { name: 'Balcony', price: basePrice + 150, rows: ['G', 'H', 'I'], seatsPerRow: 10 },
-            ];
-
-            setSections(updatedSections);
-        } catch (error) {
-            console.error('Error fetching base price:', error);
+        if (!response.ok) {
+            console.error('Failed to fetch base price');
+            return;
         }
-    }, [token]);
+
+        // Debug raw response
+        const rawText = await response.text();
+        console.log("Raw Response:", rawText);
+
+        // Try parsing as JSON
+        let data;
+        try {
+            data = JSON.parse(rawText);
+        } catch (error) {
+            console.error("JSON Parsing Error:", error);
+            return;
+        }
+
+        console.log("Parsed JSON:", data);
+
+        // Convert price to number
+        const basePrice = parseInt(data.price, 10); 
+
+        // Adjust prices dynamically
+        const updatedSections = [
+            { name: 'Orchestra', price: basePrice + 50, rows: ['A', 'B', 'C'], seatsPerRow: 10 },
+            { name: 'Mezzanine', price: basePrice + 100, rows: ['D', 'E', 'F'], seatsPerRow: 10 },
+            { name: 'Balcony', price: basePrice + 150, rows: ['G', 'H', 'I'], seatsPerRow: 10 },
+        ];
+
+        setSections(updatedSections);
+    } catch (error) {
+        console.error('Error fetching base price:', error);
+    }
+}, [showId]);
+
 
     useEffect(() => {
         fetchBasePrice();
@@ -79,10 +96,15 @@ const SeatSelection = () => {
     };
 
     const handlePurchase = async () => {
+        console.log("Selected Seats:", selectedSeats);
         if (selectedSeats.length === 0) return;
 
         try {
-            if (!token) return;
+            if (!token) 
+                {
+                    console.log("Selected Seats:", selectedSeats);
+                    
+                }
 
             // Step 1: Lock seats for payment
             const bookResult = await fetch(`${process.env.REACT_APP_API_URL}/seats/book_seats`, {

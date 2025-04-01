@@ -43,7 +43,7 @@ function App() {
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/vender-dashboard" element={<VendorDashboard/>}/>
         <Route path="/venderedit" element={<VenderEdit/>}/>
-        <Route path="/ticket" element={<TicketPage/>}/>
+        <Route path="/ticket/:show_id/:booking_id/:selectedSeats" element={<TicketPage />} />
         <Route path="/review" element={<Review/>}/>
         <Route path="/adminedit" element={<AdminEdit/>}/>
         </Routes>

@@ -143,3 +143,27 @@
     padding: 12px;
   }
 }
+.dropzone {
+  border: 2px dashed #aaa;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: #00baf2;
+  margin-bottom: 10px;
+}
+
+.preview-image {
+  width: 100px;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 4px;
+}

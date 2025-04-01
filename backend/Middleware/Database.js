@@ -56,7 +56,7 @@ const createTables = async() => {
             pincode varchar(10) NOT NULL,
             total_seats int NOT NULL,
             total_screens int NOT NULL,
-            dedicated_parking tinyint(1) NOT NULL DEFAULT 0,
+            parking tinyint(1) NOT NULL DEFAULT 0,
             food_court tinyint(1) NOT NULL DEFAULT 0,
             wheelchair_access tinyint(1) NOT NULL DEFAULT 0,
             dolby_sound tinyint(1) NOT NULL DEFAULT 0,
@@ -70,7 +70,6 @@ const createTables = async() => {
             screen_imax tinyint(1) NOT NULL DEFAULT 0,
             screen_vip tinyint(1) NOT NULL DEFAULT 0,
             dolby_atmos tinyint(1) NOT NULL DEFAULT 0,
-            screen_type varchar(50) NOT NULL DEFAULT 'Standard',
             PRIMARY KEY (theater_id),
             KEY theater_fk_owner (owner_id),
             CONSTRAINT theater_fk_owner FOREIGN KEY (owner_id) REFERENCES user (user_id) ON DELETE SET NULL

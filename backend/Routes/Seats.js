@@ -71,10 +71,10 @@ Seats.post("/confirm_booking", async(req, res) => {
             const book_id = booking_id(username, show_id);
 
             // Get user_id from username
-            const userQuery = "SELECT user_id FROM user WHERE username = ?";
+            const userQuery = "SELECT user_id FROM user WHERE email = ?";
             const userResult = await execute_query(userQuery, [username]);
             if (userResult.length === 0) {
-                return res.status(404).json({ message: "User not found" });
+                return res.status(403).json({ message: "User not found" });
             }
             const user_id = userResult[0].user_id;
 

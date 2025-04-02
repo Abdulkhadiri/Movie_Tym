@@ -22,6 +22,7 @@ function Vender() {
       if (response.status === 200) {
         sessionStorage.setItem('token', response.data.token);
         sessionStorage.setItem('user', formData.username);
+        console.log(formData.username,formData)
         navigate('/vender-dashboard');
       }
     } catch (err) {

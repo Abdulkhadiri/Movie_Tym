@@ -19,7 +19,8 @@ app.use("/admin", adminRouter);
 const privaterouter = require("./privatebooking")
 app.use("/privatebooking", privaterouter);
 
-
+const homeRouter = require("./home");
+app.use("/home", homeRouter);
 
 const Seats = require("./Seats");
 app.use("/seats", Seats);

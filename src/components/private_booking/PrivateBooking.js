@@ -4,6 +4,7 @@ import './privatebooking.css';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import axios from "axios";
+import { useEffect } from 'react';
 
 
 
@@ -16,6 +17,12 @@ const PrivateBooking = () => {
     endTime: '',
     price:''
   });
+
+// Inside your component:
+useEffect(() => {
+  setPrice(calculatePrice());
+}, [formData]); // Runs when formData changes
+
   
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [availabilityStatus, setAvailabilityStatus] = useState(null);
@@ -224,7 +231,7 @@ const handleSubmit = async(e) => {
                 </div>
                 <div className="price-row total">
                   <span>Total Estimated Price:</span>
-                  <span >{calculatePrice() > 0 ? calculatePrice().toFixed(2) : '0.00'} /-</span>
+                  <span>{price > 0 ? price.toFixed(2) : '0.00'} /-</span>
 
                 </div>
               </div>

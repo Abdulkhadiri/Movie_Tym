@@ -3,6 +3,7 @@ const db = require('../Middleware/Database');
 const code_generator = require('../Middleware/Generate_show_id');
 const Seat_Generator = require('../Middleware/Generate_Seats');
 const Auth = require('../Middleware/Authentication');
+const bcrypt = require("bcrypt");
 const vendorRouter = express.Router();
 const execute_query = async(query, params) => {
     return new Promise((resolve, reject) => {
@@ -75,11 +76,14 @@ vendorRouter.post('/login', async(req, res) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
     try {
-        const query = 'SELECT * FROM user WHERE username = ? AND password = ? AND user_type = "theater_owner"';
-        const result = await execute_query(query, [username, password]);
+        const query = 'SELECT * FROM user WHERE email = ? AND  user_type = "theater_owner"';
+        const result = await execute_query(query, [username]);
         if (result.length === 0) {
+            console.log("hjkl")
             return res.status(401).json({ error: 'Invalid credentials' });
         }
+        const hashedPassword = result[0].password;
+        const isMatch = await bcrypt.compare(password, hashedPassword);
         const token = Auth.createToken(username, password, 'theater_owner');
         res.status(200).send(token);
     } catch (error) {
@@ -89,13 +93,14 @@ vendorRouter.post('/login', async(req, res) => {
 });
 vendorRouter.get("/fetch_city", async(req, res) => {
     try {
-        const username = 'alice_smith';
-        console.log(username);
-        const query = "Select user_id from user where username = ? and user_type='theater_owner'";
+        const {username} = req.query;
+        const query = "Select user_id from user where email = ? and user_type='theater_owner'";
         const result = await execute_query(query, [username]);
         const user_id = result[0].user_id;
+        console.log(user_id,username)
         const query1 = "Select city from theater where owner_id = ?";
         const result1 = await execute_query(query1, [user_id]);
+        console.log(result1)
         const names = [...new Set(result1.map(student => student.city))];
         res.status(200).json(names);
     } catch (error) {
@@ -107,7 +112,7 @@ vendorRouter.get("/getTheatres", async(req, res) => {
     try {
         const { username, city } = req.query;
         console.log(username, city);
-        const query = "SELECT user_id FROM user WHERE username = ? AND user_type = 'theater_owner'";
+        const query = "SELECT user_id FROM user WHERE email = ? AND user_type = 'theater_owner'";
         const result = await execute_query(query, [username]);
 
         if (result.length === 0) {
@@ -145,7 +150,7 @@ vendorRouter.get("/getAreas", async(req, res) => {
     if (!city || !owner_id) {
         return res.status(400).json({ error: "Missing required fields" });
     }
-    const query = "SELECT user_id FROM user WHERE username = ? AND user_type = 'theater_owner'";
+    const query = "SELECT user_id FROM user WHERE email = ? AND user_type = 'theater_owner'";
     const result = await execute_query(query, [owner_id]);
     if (result.length === 0) {
         return res.status(402).json({ error: "User not found or not a theater owner" });

@@ -67,8 +67,8 @@ adminRouter.post("/add_vendor", async (req, res) => {
       city,
       state,
       pincode,
-      total_screens,
       total_seats,
+      total_screens,
       parking,
       foodcourt,
       wheelchair,
@@ -93,18 +93,33 @@ adminRouter.post("/add_vendor", async (req, res) => {
   }
 });
 
-adminRouter.post("/delete_vendor", async (req, res) => {
-  const { vendor_id, theater_id } = req.body;
-  if (!id) return res.status(400).send("id cannot be emoty");
-  try {
-    const query =
-      "delete from table theater where owner_id = ? AND theatre_id=? ";
-    execute_query(query, [vendor_id, theater_id]);
-    return res.status(200).send("vendor deleted successfully");
-  } catch (err) {
-    console.error(err);
-  }
-});
+// adminRouter.post("/delete_vendor", async (req, res) => {
+//   const { vendor_id, theater_id } = req.body;
+//   if (!id) return res.status(400).send("id cannot be emoty");
+//   try {
+//     const query =
+//       "delete from table theater where owner_id = ? AND theatre_id=? ";
+//     execute_query(query, [vendor_id, theater_id]);
+//     return res.status(200).send("vendor deleted successfully");
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });
+
+
+// adminRouter.delete('/delete_vendor/:id', async (req, res) => {
+//   const { id } = req.params;
+//   if (!id) return res.status(400).send("id cannot be emoty");
+//   try {
+//     const query =
+//       "delete from table theater where owner_id = ? AND theatre_id=? ";
+//     const result= await execute_query(query, [vendor_id, theater_id]);
+//     return res.status(200).send("vendor deleted successfully");
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });
+
 
 adminRouter.post("/update_vendor", async (req, res) => {
   try {
@@ -128,6 +143,7 @@ adminRouter.post("/update_vendor", async (req, res) => {
       screen_4dx,
       screen_imax,
       screen_vip,
+      is_active,
       id
     } = req.body;
 
@@ -144,7 +160,7 @@ adminRouter.post("/update_vendor", async (req, res) => {
     });
 
     const query =
-      "UPDATE theater SET name=?,location=?,city=?,state=?,pincode=?,total_screens=?,total_seats=?,parking=?, food_court=?,wheelchair_access=?,dolby_sound=?,restaurant=?,gaming_zone=?,vip_lounge=?,screen_2d=?,screen_3d=?,screen_4dx=?,screen_imax=?,screen_vip=? WHERE theater_id = ?";
+      "UPDATE theater SET name=?,location=?,city=?,state=?,pincode=?,total_screens=?,total_seats=?,parking=?, food_court=?,wheelchair_access=?,dolby_sound=?,restaurant=?,gaming_zone=?,vip_lounge=?,screen_2d=?,screen_3d=?,screen_4dx=?,screen_imax=?,screen_vip=?,is_active=? WHERE theater_id = ?";
     
     const results = await execute_query(query, [
       name,
@@ -166,6 +182,7 @@ adminRouter.post("/update_vendor", async (req, res) => {
       screen_4dx,
       screen_imax,
       screen_vip,
+      is_active,
       id,
     ]);
 
@@ -188,8 +205,14 @@ adminRouter.post("/update_vendor", async (req, res) => {
 
 adminRouter.get("/display_vendors", async (req, res) => {
   try {
-    const query = "SELECT * FROM theater";
+    const query = `
+      SELECT 
+        *
+      FROM theater t
+      JOIN user u ON t.owner_id = u.user_id`;
+    
     const results = await execute_query(query, []);
+    console.log(results)
     return res.status(200).send(results);
   } catch (err) {
     return res.status(400).send("failed to display");

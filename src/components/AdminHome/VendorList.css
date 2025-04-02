@@ -310,3 +310,8 @@
         padding: 5px 8px;
     }
 }
+
+.detail-section ul li{
+    list-style: none;
+    
+}

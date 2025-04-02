@@ -69,6 +69,7 @@ const createTables = async() => {
             screen_4dx tinyint(1) NOT NULL DEFAULT 0,
             screen_imax tinyint(1) NOT NULL DEFAULT 0,
             screen_vip tinyint(1) NOT NULL DEFAULT 0,
+            is_active tinyint(1) NOT NULL DEFAULT 1,
             PRIMARY KEY (theater_id),
             KEY theater_fk_owner (owner_id),
             CONSTRAINT theater_fk_owner FOREIGN KEY (owner_id) REFERENCES user (user_id) ON DELETE SET NULL
@@ -98,9 +99,10 @@ const createTables = async() => {
             seat_id INT AUTO_INCREMENT PRIMARY KEY,
             booking_id VARCHAR(255),
             show_id VARCHAR(255) NOT NULL,
-            seat_number INT NOT NULL,
+            seat_number VARCHAR(255) NOT NULL,
             status ENUM('available', 'booked', 'blocked') DEFAULT 'available',
-            seat_type ENUM('regular', 'premium', 'vip') NOT NULL,
+            seat_type ENUM('Orchestra', 'Mezzanine', 'Balcony') NOT NULL,
+            extra_price INT NOT NULL,
             FOREIGN KEY (booking_id) REFERENCES booking(booking_id) ON DELETE CASCADE,
             FOREIGN KEY (show_id) REFERENCES show_table(show_id) ON DELETE CASCADE
         );`,

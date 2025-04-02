@@ -24,7 +24,7 @@ privaterouter.post('/add_details',async(req,res)=>{
 
     try{
         const data = await execute_query('SELECT user_id FROM user WHERE email = ?', [email]); 
-        const query = 'Insert into private_booking(user_id,location,no.of.people,date,time,price) values (?,?,?,?,?,?)'
+        const query = 'Insert into private_booking(user_id,location,no_of_people,date,time,price) values (?,?,?,?,?,?)'
         const result = await execute_query(query,[data[0].user_id,location,no_of_people ,date,time,price]);
         if(result !== null)
         return res.status(200).json({message:'data inserted successfully'})

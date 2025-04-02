@@ -19,7 +19,7 @@ function AdminHome() {
     };
 
     fetchVendors();
-}, []);
+});
 
   const handleAddVendor = (newVendor) => {
     setVendors([...vendors, newVendor]);

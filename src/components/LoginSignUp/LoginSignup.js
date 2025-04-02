@@ -21,82 +21,188 @@ function LoginSignup() {
 
   const navigate = useNavigate();
 
+  // const login = async (e) => {
+  //   e.preventDefault();
+  //   setLoginError("");
+  //   setLoginSuccess("");
+  //   setIsLoading(true);
+
+  //   // Basic validation
+  //   if (!username || !password) {
+  //     setLoginError("Please fill in all fields");
+  //     setIsLoading(false);
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { 
+  //       username, 
+  //       password 
+  //     });
+
+  //     setLoginSuccess("Login successful!");
+  //     sessionStorage.setItem("token", response.data);
+  //     sessionStorage.setItem("user", username);
+      
+  //     // Small delay to show success message
+  //     setTimeout(() => {
+  //       navigate("/home");
+  //     }, 1000);
+  //   } catch (error) {
+  //     setLoginError(
+  //       error.response?.data?.message || "Check your credentials"
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const signup = async (e) => {
+  //   e.preventDefault();
+  //   setSignupError("");
+  //   setSignupSuccess("");
+  //   setIsLoading(true);
+
+  //   // Basic validation
+  //   if (
+  //     !signUpName ||
+  //     !signUpEmail ||
+  //     !signUpPassword ||
+  //     !signUpConfirmPassword
+  //   ) {
+  //     setSignupError("Please fill in all fields");
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   if (signUpPassword !== signUpConfirmPassword) {
+  //     setSignupError("Passwords do not match");
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup_user`, {
+  //       username: signUpName,
+  //       email: signUpEmail,
+  //       password: signUpPassword,
+  //       cnfpassword: signUpConfirmPassword,
+  //       phone_number: signUpPhone
+  //     });
+
+  //     setSignupSuccess("Registration successful! Please login.");
+      
+  //     // Clear form fields
+  //     setSignUpName("");
+  //     setSignUpEmail("");
+  //     setSignUpPassword("");
+  //     setSignUpConfirmPassword("");
+      
+      
+  //     setActiveTab("login");
+  //   } catch (error) {
+  //     setSignupError(
+  //       error.response?.data?.message || "User already exists. Please login."
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const login = async (e) => {
     e.preventDefault();
     setLoginError("");
     setLoginSuccess("");
     setIsLoading(true);
-
-    // Basic validation
+  
     if (!username || !password) {
       setLoginError("Please fill in all fields");
       setIsLoading(false);
       return;
     }
+  
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { 
         username, 
         password 
       });
-
+  
       setLoginSuccess("Login successful!");
-      sessionStorage.setItem("token", response.data);
+      sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("user", username);
-      
-      // Small delay to show success message
+  
       setTimeout(() => {
         navigate("/home");
       }, 1000);
     } catch (error) {
-      setLoginError(
-        error.response?.data?.message || "Check your credentials"
-      );
+      if (error.response && error.response.data && error.response.data.message) {
+        setLoginError(error.response.data.message);
+      } else {
+        setLoginError("An error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const signup = async (e) => {
     e.preventDefault();
     setSignupError("");
     setSignupSuccess("");
     setIsLoading(true);
-
-    // Basic validation
-    if (
-      !signUpName ||
-      !signUpEmail ||
-      !signUpPassword ||
-      !signUpConfirmPassword
-    ) {
+  
+    // Basic field validation
+    if (!signUpName || !signUpEmail || !signUpPhone || !signUpPassword || !signUpConfirmPassword) {
       setSignupError("Please fill in all fields");
       setIsLoading(false);
       return;
     }
-
-    if (signUpPassword !== signUpConfirmPassword) {
-      setSignupError("Passwords do not match");
+  
+    // Name validation: Must contain at least 5 letters
+    if (signUpName.length < 5) {
+      setSignupError("Name must contain at least 5 letters.");
       setIsLoading(false);
       return;
     }
-
+    const mailRegex = /^\d{10}$/;
+    if (!mailRegex.test(signUpPhone)) {
+      setSignupError("Phone number must contain exactly 10 digits.");
+      setIsLoading(false);
+      return;
+    }
+    // Phone number validation: Must be exactly 10 digits
+    const phoneRegex =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    ;
+    if (!phoneRegex.test(signUpEmail)) {
+      setSignupError("Incorrect email format.");
+      setIsLoading(false);
+      return;
+    }
+  
+    // Password validation: Both passwords must match
+    if (signUpPassword !== signUpConfirmPassword) {
+      setSignupError("Passwords do not match.");
+      setIsLoading(false);
+      return;
+    }
+  
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup_user`, {
         username: signUpName,
         email: signUpEmail,
+        phone_number: signUpPhone,
         password: signUpPassword,
         cnfpassword: signUpConfirmPassword,
-        phone_number: signUpPhone
       });
-
+  
       setSignupSuccess("Registration successful! Please login.");
       
-      // Clear form fields
+      // Clear form fields after successful signup
       setSignUpName("");
       setSignUpEmail("");
+      setSignUpPhone("");
       setSignUpPassword("");
       setSignUpConfirmPassword("");
-      
       
       setActiveTab("login");
     } catch (error) {

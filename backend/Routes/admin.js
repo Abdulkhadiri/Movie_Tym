@@ -39,9 +39,6 @@ adminRouter.post("/add_vendor", async (req, res) => {
     const theatername = req.body.theaterName;
     const total_screens = req.body.totalScreens;
     const total_seats = req.body.totalSeats;
-    console.log(location);
-    console.log(total_screens);
-    console.log(licencenumber);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const uqur = `INSERT INTO user (username,email,password,user_type,phone_number) VALUES (?,?,?,?,?)`;
@@ -93,32 +90,20 @@ adminRouter.post("/add_vendor", async (req, res) => {
   }
 });
 
-// adminRouter.post("/delete_vendor", async (req, res) => {
-//   const { vendor_id, theater_id } = req.body;
-//   if (!id) return res.status(400).send("id cannot be emoty");
-//   try {
-//     const query =
-//       "delete from table theater where owner_id = ? AND theatre_id=? ";
-//     execute_query(query, [vendor_id, theater_id]);
-//     return res.status(200).send("vendor deleted successfully");
-//   } catch (err) {
-//     console.error(err);
-//   }
-// });
 
 
-// adminRouter.delete('/delete_vendor/:id', async (req, res) => {
-//   const { id } = req.params;
-//   if (!id) return res.status(400).send("id cannot be emoty");
-//   try {
-//     const query =
-//       "delete from table theater where owner_id = ? AND theatre_id=? ";
-//     const result= await execute_query(query, [vendor_id, theater_id]);
-//     return res.status(200).send("vendor deleted successfully");
-//   } catch (err) {
-//     console.error(err);
-//   }
-// });
+adminRouter.delete('/delete_vendor/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).send("id cannot be emoty");
+  try {
+    const query =
+      "UPDATE theater SET is_active = 0 WHERE owner_id = ? AND is_active = 1";
+    const result= await execute_query(query, [id]);
+    return res.status(200).send("vendor deleted successfully");
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 
 adminRouter.post("/update_vendor", async (req, res) => {
@@ -212,7 +197,6 @@ adminRouter.get("/display_vendors", async (req, res) => {
       JOIN user u ON t.owner_id = u.user_id`;
     
     const results = await execute_query(query, []);
-    console.log(results)
     return res.status(200).send(results);
   } catch (err) {
     return res.status(400).send("failed to display");

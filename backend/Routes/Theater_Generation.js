@@ -43,21 +43,21 @@ Theater.post('/add-show', async(req, res) => {
     }
 });
 Theater.get('/shows', async(req, res) => {
-    const { movie_name, date, time } = req.query;
+    const { movie_name, date, Location } = req.query;
     console.log(movie_name)
-    console.log(date);
-    if (!movie_name || !date || !time) {
+    console.log(Location);
+    if (!movie_name || !date ) {
         return res.status(400).json({ message: 'Movie name, date, and time are required' });
     }
     const query = `
         SELECT s.show_id, s.movie_name, s.show_time, t.name AS theater_name, t.location
         FROM show_table s
         JOIN theater t ON s.theater_id = t.theater_id
-        WHERE s.movie_name = ? AND s.show_date = ? 
+        WHERE s.movie_name = ? AND s.show_date = ?  AND t.city=?
     `;
 
     try {
-        const results = await execute_query(query, [movie_name, date]);
+        const results = await execute_query(query, [movie_name, date,Location]);
         console.log('DB Results:', results);
 
         if (results.length === 0) {

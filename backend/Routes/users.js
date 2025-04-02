@@ -41,26 +41,52 @@ const execute_query = async (query, params) => {
   });
 };
 
+// app.post("/login", async (req, res) => {
+//   const { username, password } = req.body;
+//   const query = "SELECT username, password,user_type FROM user WHERE Email= ?";
+
+//   try {
+//     const results = await execute_query(query, [username]);
+
+//     if (results.length === 0)
+//       return res.status(401).send("Check your username or password");
+
+//     const hashedPassword = results[0].password;
+//     const role = results[0].user_type;
+//     const isMatch = await bcrypt.compare(password, hashedPassword);
+//     if (!isMatch)
+//       return res.status(401).send("Check your username or password");
+//     const token = Auth.createToken(username, password, role);
+//     res.status(200).send(token);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Internal server error");
+//   }
+// });
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const query = "SELECT username, password,user_type FROM user WHERE Email= ?";
+  const query = "SELECT username, password, user_type FROM user WHERE Email= ?";
 
   try {
     const results = await execute_query(query, [username]);
 
-    if (results.length === 0)
-      return res.status(401).send("Check your username or password");
+    if (results.length === 0) {
+      return res.status(401).json({ message: "Username not found" });
+    }
 
     const hashedPassword = results[0].password;
     const role = results[0].user_type;
     const isMatch = await bcrypt.compare(password, hashedPassword);
-    if (!isMatch)
-      return res.status(401).send("Check your username or password");
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+
     const token = Auth.createToken(username, password, role);
-    res.status(200).send(token);
+    res.status(200).json({ token });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal server error");
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

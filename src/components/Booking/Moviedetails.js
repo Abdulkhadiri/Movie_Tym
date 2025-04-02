@@ -24,7 +24,7 @@ const MovieDetails = () => {
 
     const fetchShows = (date) => {
         if (movie && date) {
-            fetch(`http://localhost:5000/Theater_Generation/shows?movie_name=${movie.title}&date=${date}&time=19:00:00`)
+            fetch(`http://localhost:5000/Theater_Generation/shows?movie_name=${movie.title}&date=${date}&Location=${Location}`)
                 .then(response => response.json())
                 .then(data => {
                     setShows(Array.isArray(data) ? data : []);

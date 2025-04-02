@@ -94,81 +94,114 @@ adminRouter.post("/add_vendor", async (req, res) => {
 
 adminRouter.delete('/delete_vendor/:id', async (req, res) => {
   const { id } = req.params;
+  console.log(id)
   if (!id) return res.status(400).send("id cannot be emoty");
   try {
     const query =
-      "UPDATE theater SET is_active = 0 WHERE owner_id = ? AND is_active = 1";
+      "UPDATE theater SET is_active = 0 WHERE theater_id = ? AND is_active = 1";
     const result= await execute_query(query, [id]);
-    return res.status(200).send("vendor deleted successfully");
+    return res.status(200).send("Theater deleted successfully");
   } catch (err) {
     console.error(err);
   }
 });
 
+adminRouter.get('/get_vendor/:id',async(req,res) =>{
+  const query = "SELECT * FROM theater WHERE theater_id = ?";
+  const {id} = req.params;
+  try {
+    const result = await execute_query(query, id);
+    console.log(result);
+    return res.status(200).send(result);
+    } catch (err) {
+      console.error(err);
+      }
+} );
 
 adminRouter.post("/update_vendor", async (req, res) => {
   try {
-    const {
-      name,
-      location,
-      city,
-      state,
-      pincode,
-      total_screens,
-      total_seats,
-      parking,
-      foodcourt,
-      wheelchair,
-      dolby_sound,
-      restaurant,
-      gaming_zone,
-      vip_lounge,
-      screen_2d,
-      screen_3d,
-      screen_4dx,
-      screen_imax,
-      screen_vip,
-      is_active,
-      id
-    } = req.body;
+    // const {
+    //   name,
+    //   location,
+    //   city,
+    //   state,
+    //   pincode,
+    //   total_screens,
+    //   total_seats,
+    //   parking,
+    //   foodcourt,
+    //   wheelchair,
+    //   dolby_sound,
+    //   restaurant,
+    //   gaming_zone,
+    //   vip_lounge,
+    //   screen_2d,
+    //   screen_3d,
+    //   screen_4dx,
+    //   screen_imax,
+    //   screen_vip,
+    //   is_active,
+    //   id
+    // } = req.body;
 
+    const theaterData = {
+      theater_id: req.body.theater_id,
+      name: req.body.name,
+      owner_licence: req.body.owner_licence,
+      location: req.body.location,
+      owner_id: req.body.owner_id,
+      city: req.body.city,
+      state: req.body.state,
+      pincode: req.body.pincode,
+      total_seats: req.body.total_seats,
+      total_screens: req.body.total_screens,
+      parking: req.body.parking,
+      food_court: req.body.food_court,
+      wheelchair_access: req.body.wheelchair_access,
+      dolby_sound: req.body.dolby_sound,
+      restaurant: req.body.restaurant,
+      gaming_zone: req.body.gaming_zone,
+      vip_lounge: req.body.vip_lounge,
+      screen_2d: req.body.screen_2d,
+      screen_3d: req.body.screen_3d,
+      screen_4dx: req.body.screen_4dx,
+      screen_imax: req.body.screen_imax,
+      screen_vip: req.body.screen_vip,
+      is_active: req.body.is_active,
+  };
+    console.log(req.body);
+    console.log("Entered Here")
     // Validate required fields
-    if (!id) {
+    if (!theaterData.theater_id) {
       return res.status(400).send("Theater ID is required");
     }
 
     // Log incoming data for debugging
-    console.log("Update Vendor Request:", {
-      id,
-      name,
-      // Add other fields as needed
-    });
-
     const query =
       "UPDATE theater SET name=?,location=?,city=?,state=?,pincode=?,total_screens=?,total_seats=?,parking=?, food_court=?,wheelchair_access=?,dolby_sound=?,restaurant=?,gaming_zone=?,vip_lounge=?,screen_2d=?,screen_3d=?,screen_4dx=?,screen_imax=?,screen_vip=?,is_active=? WHERE theater_id = ?";
     
     const results = await execute_query(query, [
-      name,
-      location,
-      city,
-      state,
-      pincode,
-      total_screens,
-      total_seats,
-      parking,
-      foodcourt,
-      wheelchair,
-      dolby_sound,
-      restaurant,
-      gaming_zone,
-      vip_lounge,
-      screen_2d,
-      screen_3d,
-      screen_4dx,
-      screen_imax,
-      screen_vip,
-      is_active,
-      id,
+      theaterData.name,
+      theaterData.location,
+      theaterData.city,
+      theaterData.state,
+      theaterData.pincode,
+      theaterData.total_screens,
+      theaterData.total_seats,
+      theaterData.parking,
+      theaterData.food_court,
+      theaterData.wheelchair_access,
+      theaterData.dolby_sound,
+      theaterData.restaurant,
+      theaterData.gaming_zone,
+      theaterData.vip_lounge,
+      theaterData.screen_2d,
+      theaterData.screen_3d,
+      theaterData.screen_4dx,
+      theaterData.screen_imax,
+      theaterData.screen_vip,
+      theaterData.is_active,
+      theaterData.theater_id
     ]);
 
     // Check if any rows were actually updated

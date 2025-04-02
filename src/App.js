@@ -45,7 +45,7 @@ function App() {
         <Route path="/venderedit" element={<VenderEdit/>}/>
         <Route path="/ticket/:show_id/:booking_id/:selectedSeats" element={<TicketPage />} />
         <Route path="/review" element={<Review/>}/>
-        <Route path="/adminedit" element={<AdminEdit/>}/>
+        <Route path="/admin/edit_vendor/:id" element={<AdminEdit />} />
         </Routes>
     </BrowserRouter>
      

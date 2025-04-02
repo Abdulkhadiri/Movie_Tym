@@ -3,38 +3,47 @@ import VendorForm from './VendorForm';
 import VendorList from './VendorList';
 import './AdminHome.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function AdminHome() {
   const [vendors, setVendors] = useState([]);
   const [showForm, setShowForm] = useState(false);
+
+  // const navigate = useNavigate();
+  const [data, setData] = useState('Initial Value');
+
+  // Callback function to update parent state
+  const handleDataUpdate = (newValue) => {
+    setData(newValue);
+  };
+
+  const fetchVendors = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/admin/display_vendors`);
+      setVendors(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching vendors:", error);
+    }
+  };
+
+
   useEffect(() => {
-    const fetchVendors = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/admin/display_vendors`);
-        setVendors(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching vendors:", error);
-      }
-    };
 
     fetchVendors();
-});
+},[]);
 
   const handleAddVendor = (newVendor) => {
     setVendors([...vendors, newVendor]);
     setShowForm(false);
   };
 
-  const handleDeleteVendor = (id) => {
-    const response= axios.put(`${process.env.REACT_APP_API_URL}/admin/delete_vendors/${id}`)
-    console.log(response);
+  const handleDeleteVendor = async (id) => {
+    console.log(id);
+    const response = await axios.delete(`${process.env.REACT_APP_API_URL}/admin/delete_vendor/${id}`)
+    await fetchVendors();
   };
 
-  const handleUpdateVendor = (id) => {
-    // Implement update functionality
-    console.log('Update vendor with id:', id);
-  };
 
   return (
     <div className="admin-home">
@@ -54,8 +63,8 @@ function AdminHome() {
         <div className='list'>
         <VendorList
           vendors={vendors}
+          refreshVendors={fetchVendors}
           onDeleteVendor={handleDeleteVendor}
-          onUpdateVendor={handleUpdateVendor}
         />
         </div>
       )}

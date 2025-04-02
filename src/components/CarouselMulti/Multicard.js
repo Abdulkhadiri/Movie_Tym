@@ -5,7 +5,6 @@ import './Multi.css';
 import {useNavigate} from 'react-router-dom';
 
 
-import { FaStar } from 'react-icons/fa';
 
 function Multicard() {
   const [movies, setMovies] = useState([]);

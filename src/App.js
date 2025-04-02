@@ -35,7 +35,7 @@ function App() {
         <Route path="/vendor" element={<ThreaterOwner />} />
         <Route path="/private-booking" element={<PrivateBooking />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/movies/:id" element={<MovieDetails />} />
+        <Route path="/movies/:movie_name" element={<MovieDetails />} />
         <Route path="/adminhome" element={<AdminHome />} />
         <Route path="/venderhome" element={<VenderHome />} />
         <Route path="/profile" element={<UserProfile />} />

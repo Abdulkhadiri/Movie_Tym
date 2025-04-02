@@ -1,31 +1,33 @@
 /* Navbar Styles */
-*{
-  margin: 0;
-  padding: 0;
+
+* {
+    margin: 0;
+    padding: 0;
 }
+
 .navbar {
-    background-color:#00baf2;
+    background-color: #00baf2;
     color: #ffffff;
     width: 100%;
     padding: 0;
     margin: 0;
     height: 130px;
-  }
-  .navbar-1 {
-    
+}
+
+.navbar-1 {
     width: 100%;
     margin: 0 auto;
     padding: 0 1rem;
-  }
-  
-  .first_container {
+}
+
+.first_container {
     display: flex;
     justify-content: space-between;
     /* padding: 16px; */
     height: 70px;
-  }
-  
-  .first_sub_container {
+}
+
+.first_sub_container {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -33,27 +35,27 @@
     /* margin-bottom: 1rem; */
     justify-content: space-between;
     width: 500px;
-  }
-  
-  .logo {
+}
+
+.logo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-  }
-  
-  .title {
+}
+
+.title {
     font-size: 1.5rem;
     font-weight: 700;
     color: #ffffff;
-  }
-  
-  .search_bar {
+}
+
+.search_bar {
     position: relative;
     display: flex;
     align-items: center;
-  }
-  
-  .search_bar input {
+}
+
+.search_bar input {
     background-color: white;
     border-radius: 9999px;
     padding: 16px;
@@ -62,21 +64,22 @@
     max-width: 400px;
     color: black;
     border: none;
-  }
-  .search_and_input{
+}
+
+.search_and_input {
     width: 100%;
-  }
-  
-  .search_bar input:focus {
+}
+
+.search_bar input:focus {
     outline: none;
     border: none;
+}
 
-  }
-  
-  .search_bar input::placeholder {
+.search_bar input::placeholder {
     color: black;
-  }  
-  .search {
+}
+
+.search {
     position: absolute;
     right: 0.75rem;
     background: transparent;
@@ -86,20 +89,22 @@
     align-items: center;
     justify-content: center;
     color: #00baf2;
-  }
-  
-  .search svg {
+}
+
+.search svg {
     height: 1.25rem;
     width: 1.25rem;
-  }
-  
-  /* Logout button */
-  .first_container > div:last-child {
+}
+
+
+/* Logout button */
+
+.first_container>div:last-child {
     display: flex;
     align-items: center;
-  }
-  
-  .first_container > div:last-child button {
+}
+
+.first_container>div:last-child button {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -110,18 +115,18 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.2s;
-  }
-  
-  .first_container > div:last-child button:hover {
+}
+
+.first_container>div:last-child button:hover {
     transform: scale(1.1);
-  }
-  
- 
-  .border-t {
+}
+
+.border-t {
     border-top: 1px solid white;
-  }
-  
-  /* .nav_items {
+}
+
+
+/* .nav_items {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -145,238 +150,256 @@
     border-radius: 30px;
     padding: 12px;
   } */
-  /* ... (previous CSS remains the same until nav_items) ... */
+
+
+/* ... (previous CSS remains the same until nav_items) ... */
 
 .nav_items {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 16px;
 }
 
 .navbar-1 a {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem 0.75rem;
-  font-weight: 500;
-  position: relative; /* Added for underline effect */
-  transition: all 0.3s ease; /* Smooth transition for all changes */
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    position: relative;
+    /* Added for underline effect */
+    transition: all 0.3s ease;
+    /* Smooth transition for all changes */
 }
 
 .navbar-1 a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  background: white;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  transition: width 0.3s ease;
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: white;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
 }
 
 .navbar-1 a:hover {
-  color: white;
-  transform: scale(1.1); /* Zoom effect */
+    color: white;
+    transform: scale(1.1);
+    /* Zoom effect */
 }
 
 .navbar-1 a:hover::after {
-  width: 100%; /* Full width underline on hover */
+    width: 100%;
+    /* Full width underline on hover */
 }
 
+
 /* Sidebar Styles */
+
 .sidebar {
-  position: fixed;
-  top: 0;
-  right: -300px;
-  width: 300px;
-  height: 100vh;
-  background-color: #ffffff;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease-in-out;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease-in-out;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar.open {
-  right: 0;
+    right: 0;
 }
 
 .sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }
 
 .sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #00baf2;
-  color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #00baf2;
+    color: white;
 }
 
 .user-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .user-icon {
-  width: 30px;
-  height: 30px;
+    width: 30px;
+    height: 30px;
 }
 
 .close-sidebar {
-  background: transparent;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.sidebar-nav {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 0;
-}
-
-.sidebar-nav a {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 15px 20px;
-  color: #333;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar-nav a:hover {
-  background-color: #f0f0f0;
-}
-
-.sidebar-nav a svg {
-  width: 20px;
-  height: 20px;
-}
-
-.sidebar-footer {
-  padding: 20px;
-  border-top: 1px solid #e0e0e0;
-}
-
-.sidebar-logout,
-.sidebar-login {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  background-color: #00baf2;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar-logout:hover,
-.sidebar-login:hover {
-  background-color: #0099cc;
-}
-
-/* Mobile Responsiveness */
-@media screen and (max-width: 768px) {
-  .sidebar {
-    width: 250px;
-  }
-  .logo img{
-    width: 100%;
-    height: 100%;
-  }
-  .logo{
-    width: 150%;
-    /* height: 30%; */
-    margin-left:0px;
-  }
-}
-/* Add to your existing CSS */
-.auth-menu-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-@media screen and (max-width: 768px) {
-  .auth-menu-container button:not(.hamburger) {
-    display: none;
-  }
-
-  .hamburger {
-    display: flex;
     background: transparent;
     border: none;
     color: white;
     cursor: pointer;
-  }
 }
 
+.sidebar-nav {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-nav a:hover {
+    background-color: #f0f0f0;
+}
+
+.sidebar-nav a svg {
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.sidebar-logout,
+.sidebar-login {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #00baf2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-logout:hover,
+.sidebar-login:hover {
+    background-color: #0099cc;
+}
+
+
+/* Mobile Responsiveness */
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 250px;
+    }
+    .logo img {
+        width: 100%;
+        height: 100%;
+    }
+    .logo {
+        width: 150%;
+        /* height: 30%; */
+        margin-left: 0px;
+    }
+}
+
+
+/* Add to your existing CSS */
+
+.auth-menu-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .auth-menu-container button:not(.hamburger) {
+        display: none;
+    }
+    .hamburger {
+        display: flex;
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+}
+
+
 /* Location Dropdown Styles */
+
 .location-dropdown {
-  display: flex;
-  align-items: center;
-  gap: 5px; /* Space between dropdown and icon */
-  background-color: white;
-  border-radius: 5px;
-  padding: 5px 10px;
-  color: #333;
-  border: none;
-  cursor: pointer;
-  max-width: 100%; /* Ensure it doesn't overflow */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* Space between dropdown and icon */
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    max-width: 100%;
+    /* Ensure it doesn't overflow */
 }
 
 .location-dropdown select {
-  border: none;
-  background: transparent;
-  font-size: medium;
-  color: #333;
-  padding: 5px;
-  appearance: none; /* Remove default dropdown arrow */
-  outline: none;
-  flex-grow: 1; /* Allow the select to take available space */
+    border: none;
+    background: transparent;
+    font-size: medium;
+    color: #333;
+    padding: 5px;
+    appearance: none;
+    /* Remove default dropdown arrow */
+    outline: none;
+    flex-grow: 1;
+    /* Allow the select to take available space */
 }
 
 .location-dropdown select:focus {
-  outline: none;
+    outline: none;
 }
 
 .location-icon {
-  color: #00baf2;
-  width: 20px;
-  height: 20px;
+    color: #00baf2;
+    width: 20px;
+    height: 20px;
 }
 
-/* Adjustments for mobile responsiveness */
 @media screen and (max-width: 768px) {
-  .location-dropdown {
-    width: 100%;
-    justify-content: space-between;
-    padding: 5px; /* Reduce padding for smaller screens */
-  }
-
-  .location-dropdown select {
-    font-size: small; /* Adjust font size for readability */
-  }
-
-  .location-icon {
-    width: 18px; /* Adjust icon size for smaller screens */
-    height: 18px;
-  }
+    .location-dropdown {
+        width: 100%;
+        justify-content: space-between;
+        padding: 5px;
+        /* Reduce padding for smaller screens */
+    }
+    .location-dropdown select {
+        font-size: small;
+        /* Adjust font size for readability */
+    }
+    .location-icon {
+        width: 18px;
+        /* Adjust icon size for smaller screens */
+        height: 18px;
+    }
 }

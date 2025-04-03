@@ -45,8 +45,8 @@ Theater.post('/add-show', async(req, res) => {
 Theater.get('/shows', async(req, res) => {
     const { movie_name, date, Location } = req.query;
     console.log(movie_name)
-    console.log(Location);
-    if (!movie_name || !date ) {
+    console.log(date);
+    if (!movie_name || !date) {
         return res.status(400).json({ message: 'Movie name, date, and time are required' });
     }
     const query = `
@@ -57,7 +57,7 @@ Theater.get('/shows', async(req, res) => {
     `;
 
     try {
-        const results = await execute_query(query, [movie_name, date,Location]);
+        const results = await execute_query(query, [movie_name, date, Location]);
         console.log('DB Results:', results);
 
         if (results.length === 0) {

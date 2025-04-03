@@ -85,7 +85,9 @@ vendorRouter.post('/login', async(req, res) => {
         const hashedPassword = result[0].password;
         const isMatch = await bcrypt.compare(password, hashedPassword);
         const token = Auth.createToken(username, password, 'theater_owner');
-        res.status(200).send(token);
+        res.status(200).send({
+            token: token
+        });
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -93,11 +95,11 @@ vendorRouter.post('/login', async(req, res) => {
 });
 vendorRouter.get("/fetch_city", async(req, res) => {
     try {
-        const {username} = req.query;
+        const { username } = req.query;
         const query = "Select user_id from user where email = ? and user_type='theater_owner'";
         const result = await execute_query(query, [username]);
         const user_id = result[0].user_id;
-        console.log(user_id,username)
+        console.log(user_id, username)
         const query1 = "Select city from theater where owner_id = ?";
         const result1 = await execute_query(query1, [user_id]);
         console.log(result1)

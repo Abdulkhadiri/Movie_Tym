@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCouch } from '@fortawesome/free-solid-svg-icons';
 import './SeatSelection.css';
+import NavigationArrows from './NavigationArrows';
 
 const SeatSelection = () => {
     const [sections, setSections] = useState([]);
@@ -164,6 +165,7 @@ navigate(`/ticket/${showId}/${encodedBookingId}/${encodedSeats}`);
 
     return (
         <div>
+            <NavigationArrows prevPath={`/home`}/>
             <h2 className='he'>Select Your Seats</h2>
             <div className="curved-screen">SCREEN</div>
             {sections.map((section) => (

@@ -4,6 +4,7 @@ import './moviedetails.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import ShowCard from './ShowCard';
 import { DropdownContext } from '../Context';
+import NavigationArrows from './NavigationArrows';
 
 const MovieDetails = () => {
     const [movies, setMovies] = useState([]);
@@ -59,6 +60,7 @@ const MovieDetails = () => {
 
     return (
         <div className="moviedetails_container">
+            <NavigationArrows prevPath={`/home`}/>
             <div className="movie-info">
                 <img src={movie.image_url} alt={movie.title} className="movie-image" />
                 <div className="details">

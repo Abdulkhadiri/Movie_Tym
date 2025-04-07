@@ -5,7 +5,7 @@ const Seat_Generator = require('../Middleware/Generate_Seats');
 const Auth = require('../Middleware/Authentication');
 const bcrypt = require("bcrypt");
 const vendorRouter = express.Router();
-const execute_query = async(query, params) => {
+const execute_query = async (query, params) => {
     return new Promise((resolve, reject) => {
         db.query(query, params, (error, results) => {
             if (error) return reject(error);
@@ -15,7 +15,7 @@ const execute_query = async(query, params) => {
 };
 
 // Route to add a new show
-vendorRouter.post('/add_Show', async(req, res) => {
+vendorRouter.post('/add_Show', async (req, res) => {
     const {
         movieName,
         releaseDate,
@@ -58,7 +58,7 @@ vendorRouter.post('/add_Show', async(req, res) => {
 });
 
 
-vendorRouter.get('/theaters/:city', async(req, res) => {
+vendorRouter.get('/theaters/:city', async (req, res) => {
     const { city } = req.params;
 
     try {
@@ -69,7 +69,7 @@ vendorRouter.get('/theaters/:city', async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-vendorRouter.post('/login', async(req, res) => {
+vendorRouter.post('/login', async (req, res) => {
     const { username, password } = req.body;
     console.log(username, password);
     if (!username || !password) {
@@ -91,13 +91,13 @@ vendorRouter.post('/login', async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-vendorRouter.get("/fetch_city", async(req, res) => {
+vendorRouter.get("/fetch_city", async (req, res) => {
     try {
-        const {username} = req.query;
+        const { username } = req.query;
         const query = "Select user_id from user where email = ? and user_type='theater_owner'";
         const result = await execute_query(query, [username]);
         const user_id = result[0].user_id;
-        console.log(user_id,username)
+        console.log(user_id, username)
         const query1 = "Select city from theater where owner_id = ?";
         const result1 = await execute_query(query1, [user_id]);
         console.log(result1)
@@ -108,7 +108,7 @@ vendorRouter.get("/fetch_city", async(req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
-vendorRouter.get("/getTheatres", async(req, res) => {
+vendorRouter.get("/getTheatres", async (req, res) => {
     try {
         const { username, city } = req.query;
         console.log(username, city);
@@ -128,7 +128,7 @@ vendorRouter.get("/getTheatres", async(req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
-vendorRouter.get("/getScreens", async(req, res) => {
+vendorRouter.get("/getScreens", async (req, res) => {
     try {
         console.log("hello");
         const {
@@ -144,7 +144,7 @@ vendorRouter.get("/getScreens", async(req, res) => {
     }
 });
 
-vendorRouter.get("/getAreas", async(req, res) => {
+vendorRouter.get("/getAreas", async (req, res) => {
     const { owner_id, city } = req.query;
     console.log(city, owner_id)
     if (!city || !owner_id) {
@@ -167,4 +167,40 @@ vendorRouter.get("/getAreas", async(req, res) => {
         res.status(500).json({ error: "Database error", details: error.message });
     }
 });
-module.exports = vendorRouter;
+vendorRouter.delete('/api/vendors/:id', async (req, res) => {
+    try {
+      const vendorId = req.params.id;
+      
+      // Delete vendor from database (Modify query based on your DB)
+      const result = await db.query('DELETE FROM vendors WHERE id = $1', [vendorId]);
+  
+      if (result.rowCount > 0) {
+        res.status(200).json({ message: 'Vendor deleted successfully' });
+      } else {
+        res.status(404).json({ error: 'Vendor not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting vendor:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+
+vendorRouter.get("/get_movies", async (req, res) => {
+    try {
+        const { email } = req.query;
+        console.log(email, "backend");
+        const query = `SELECT * 
+        FROM user u
+JOIN theater t ON u.user_id = t.owner_id
+JOIN show_table s ON t.theater_id = s.theater_id
+    WHERE u.email = ?`;
+        const result = await execute_query(query, [email]);
+        console.log(result);
+        res.json(result);
+    } catch (error) {
+        console.error("Error fetching movies:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+module.exports = vendorRouter;

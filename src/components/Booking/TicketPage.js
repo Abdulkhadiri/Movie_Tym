@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import axios from "axios";
 import "./TicketPage.css";
+import NavigationArrows from './NavigationArrows';
 
 const TicketPage = () => {
   let { show_id, booking_id,selectedSeats } = useParams(); // ✅ Get URL parameters
@@ -57,6 +58,7 @@ const TicketPage = () => {
 
   return (
     <div className="ticket-page">
+      <NavigationArrows prevPath={`/home`}/>
       <div ref={ticketRef} className="ticket">
         <h2>🎟️ Movie Ticket</h2>
         <p><strong>Booking ID:</strong> {booking_id}</p>

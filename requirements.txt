@@ -15,3 +15,6 @@ multer
 cloudinary
 @cloudinary/react @cloudinary/url-gen
 react-dropzone
+
+chart.js
+react-chartjs-2

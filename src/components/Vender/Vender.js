@@ -20,9 +20,9 @@ function Vender() {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/vendors/login`, formData);
       if (response.status === 200) {
-        sessionStorage.setItem('token', response.data.token);
+        sessionStorage.setItem('token', response.token);
         sessionStorage.setItem('user', formData.username);
-        console.log(formData.username,formData)
+        console.log(response)
         navigate('/vender-dashboard');
       }
     } catch (err) {

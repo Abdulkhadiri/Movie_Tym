@@ -1,0 +1,21 @@
+.nav-arrows {
+    position: fixed;
+    top: 5%;
+    left: 10%;
+    display: flex;
+    gap: 15px;
+    z-index: 1000;
+}
+
+.nav-arrow {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: black; /* Change color based on your theme */
+    font-size: 10px;
+}
+
+.nav-arrow.right:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

@@ -9,7 +9,7 @@ const VendorList = ({ vendors, onDeleteVendor,refreshVendors}) => {
   const [selectedTheater, setSelectedTheater] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [updatedVendor, setUpdatedVendor] = useState(null);
-
+  console.log("Vendors:", vendors); // Debugging
   // Filter theaters based on search input
   const filteredVendors = vendors.filter(vendor =>
     vendor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||

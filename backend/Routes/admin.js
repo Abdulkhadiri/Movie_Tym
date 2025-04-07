@@ -90,33 +90,31 @@ adminRouter.post("/add_vendor", async (req, res) => {
   }
 });
 
-
-
-adminRouter.delete('/delete_vendor/:id', async (req, res) => {
+adminRouter.delete("/delete_vendor/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(id)
+  console.log(id);
   if (!id) return res.status(400).send("id cannot be emoty");
   try {
     const query =
       "UPDATE theater SET is_active = 0 WHERE theater_id = ? AND is_active = 1";
-    const result= await execute_query(query, [id]);
+    const result = await execute_query(query, [id]);
     return res.status(200).send("Theater deleted successfully");
   } catch (err) {
     console.error(err);
   }
 });
 
-adminRouter.get('/get_vendor/:id',async(req,res) =>{
+adminRouter.get("/get_vendor/:id", async (req, res) => {
   const query = "SELECT * FROM theater WHERE theater_id = ?";
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const result = await execute_query(query, id);
     console.log(result);
     return res.status(200).send(result);
-    } catch (err) {
-      console.error(err);
-      }
-} );
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 adminRouter.post("/update_vendor", async (req, res) => {
   try {
@@ -168,9 +166,9 @@ adminRouter.post("/update_vendor", async (req, res) => {
       screen_imax: req.body.screen_imax,
       screen_vip: req.body.screen_vip,
       is_active: req.body.is_active,
-  };
+    };
     console.log(req.body);
-    console.log("Entered Here")
+    console.log("Entered Here");
     // Validate required fields
     if (!theaterData.theater_id) {
       return res.status(400).send("Theater ID is required");
@@ -179,7 +177,7 @@ adminRouter.post("/update_vendor", async (req, res) => {
     // Log incoming data for debugging
     const query =
       "UPDATE theater SET name=?,location=?,city=?,state=?,pincode=?,total_screens=?,total_seats=?,parking=?, food_court=?,wheelchair_access=?,dolby_sound=?,restaurant=?,gaming_zone=?,vip_lounge=?,screen_2d=?,screen_3d=?,screen_4dx=?,screen_imax=?,screen_vip=?,is_active=? WHERE theater_id = ?";
-    
+
     const results = await execute_query(query, [
       theaterData.name,
       theaterData.location,
@@ -201,7 +199,7 @@ adminRouter.post("/update_vendor", async (req, res) => {
       theaterData.screen_imax,
       theaterData.screen_vip,
       theaterData.is_active,
-      theaterData.theater_id
+      theaterData.theater_id,
     ]);
 
     // Check if any rows were actually updated
@@ -211,15 +209,13 @@ adminRouter.post("/update_vendor", async (req, res) => {
 
     return res.status(200).json({
       message: "Vendor updated successfully",
-      updatedRows: results.affectedRows
+      updatedRows: results.affectedRows,
     });
-
   } catch (err) {
     console.error("Update vendor error:", err);
     return res.status(500).send(err.message || "Internal server error");
   }
 });
-
 
 adminRouter.get("/display_vendors", async (req, res) => {
   try {
@@ -228,12 +224,109 @@ adminRouter.get("/display_vendors", async (req, res) => {
         *
       FROM theater t
       JOIN user u ON t.owner_id = u.user_id`;
-    
+
     const results = await execute_query(query, []);
     return res.status(200).send(results);
   } catch (err) {
     return res.status(400).send("failed to display");
   }
 });
+
+// adminRouter.get("/graph", async (req, res) => {
+//   const monthly = `
+//   SELECT 
+//   DATE_FORMAT(created_at, '%Y-%m') as month,
+//   user_type,
+//   COUNT(*) as registration_count
+// FROM user
+// GROUP BY DATE_FORMAT(created_at, '%Y-%m'), user_type
+// ORDER BY month;
+//   `;
+//   const yearly = `
+//   SELECT 
+//     YEAR(created_at) as year,
+//     user_type,
+//     COUNT(*) as registration_count
+// FROM user
+// GROUP BY YEAR(created_at), user_type
+// ORDER BY year;
+//   `;
+
+//   const resmonthly = await execute_query(monthly, []);
+//   const resyearly = await execute_query(yearly, []);
+//   console.log(resmonthly);
+//   console.log(resyearly);
+//   return res.status(200).send({ monthly: resmonthly, yearly: resyearly });
+// });
+
+
+adminRouter.get("/graph", async (req, res) => {
+  const monthly = `
+  SELECT 
+    DATE_FORMAT(created_at, '%Y-%m') as month,
+    user_type,
+    COUNT(*) as registration_count
+  FROM user
+  GROUP BY DATE_FORMAT(created_at, '%Y-%m'), user_type
+  ORDER BY month;
+  `;
+  
+  const yearly = `
+  SELECT 
+    YEAR(created_at) as year,
+    user_type,
+    COUNT(*) as registration_count
+  FROM user
+  GROUP BY YEAR(created_at), user_type
+  ORDER BY year;
+  `;
+
+  const resmonthly = await execute_query(monthly, []);
+  const resyearly = await execute_query(yearly, []);
+
+  // Process monthly data
+  const monthlyProcessed = {
+    labels: [...new Set(resmonthly.map(item => item.month))], // Unique months
+    datasets: [
+      {
+        label: 'customer',
+        data: resmonthly
+          .filter(item => item.user_type === 'customer')
+          .map(item => item.registration_count)
+      },
+      {
+        label: 'theater_owner',
+        data: resmonthly
+          .filter(item => item.user_type === 'theater_owner')
+          .map(item => item.registration_count)
+      }
+    ]
+  };
+
+  // Process yearly data
+  const yearlyProcessed = {
+    labels: [...new Set(resyearly.map(item => item.year))], // Unique years
+    datasets: [
+      {
+        label: 'customer',
+        data: resyearly
+          .filter(item => item.user_type === 'customer')
+          .map(item => item.registration_count)
+      },
+      {
+        label: 'theater_owner',
+        data: resyearly
+          .filter(item => item.user_type === 'theater_owner')
+          .map(item => item.registration_count)
+      }
+    ]
+  };
+
+  return res.status(200).send({ 
+    monthly: monthlyProcessed, 
+    yearly: yearlyProcessed 
+  });
+});
+
 
 module.exports = adminRouter;

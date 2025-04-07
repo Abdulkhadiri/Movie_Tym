@@ -4,6 +4,7 @@ import "./Movie.css";
 import { useDropzone } from "react-dropzone"; // Import Dropzone
 import "./Movie.css";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import NavigationArrows from '../../components/Booking/NavigationArrows';
 
 const MovieForm = () => {
   const [formData, setFormData] = useState({
@@ -236,6 +237,7 @@ const MovieForm = () => {
 
   return (
     <div className="mov-container">
+      <NavigationArrows prevPath={`/vender-dashboard`}  />
       <div className="mov-logo">
         <img
           src={require("../../assets/images/log.png")}

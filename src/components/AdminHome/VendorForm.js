@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './VendorForm.css';
-import axios from 'axios';
+// import axios from 'axios';
 
-const VendorForm = ({ onAddVendor }) => {
+const VendorForm = ({ onAddVendor,refreshVendors}) => {
   const [theaterData, setTheaterData] = useState({
     ownerName: '',
     email: '',
@@ -32,19 +32,66 @@ const VendorForm = ({ onAddVendor }) => {
   const [screenIMAX, setScreenIMAX] = useState(0);
   const [vipScreen, setVipScreen] = useState(0);
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+    
+  //   const formData = {
+  //     ...theaterData,
+  //     facilities: { parking, foodCourt, wheelchairAccess, dolbySound, restaurant, gamingZone, vipLounge },
+  //     screenTypes: { screen2D, screen3D, screen4DX, screenIMAX, vipScreen }
+  //   };
+    
+    
+  //   onAddVendor({ ...formData, id: Date.now() });
+  // };
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const formData = {
-      ...theaterData,
-      facilities: { parking, foodCourt, wheelchairAccess, dolbySound, restaurant, gamingZone, vipLounge },
-      screenTypes: { screen2D, screen3D, screen4DX, screenIMAX, vipScreen }
-    };
-    
-    onAddVendor({ ...formData, id: Date.now() });
-    axios.post(`${process.env.REACT_APP_API_URL}/admin/add_vendor`, formData).then(res => console.log("Got error mams"));
-    console.log(formData);
+    try {
+      const formData = {
+        ...theaterData,
+        facilities: { parking, foodCourt, wheelchairAccess, dolbySound, restaurant, gamingZone, vipLounge },
+        screenTypes: { screen2D, screen3D, screen4DX, screenIMAX, vipScreen }
+      };
+      
+      // Call onAddVendor and wait for it to complete
+      await onAddVendor(formData);
+      
+      // Reset form
+      setTheaterData({
+        ownerName: '',
+        email: '',
+        password: '',
+        phone: '',
+        licenseNumber: '',
+        theaterName: '',
+        address: '',
+        city: '',
+        state: '',
+        pincode: '',
+        totalScreens: '',
+        totalSeats: '',
+      });
+      
+      // Reset checkboxes
+      setParking(0);
+      setFoodCourt(0);
+      setWheelchairAccess(0);
+      setDolbySound(0);
+      setRestaurant(0);
+      setGamingZone(0);
+      setVipLounge(0);
+      setScreen2D(0);
+      setScreen3D(0);
+      setScreen4DX(0);
+      setScreenIMAX(0);
+      setVipScreen(0);
+      
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User2, ArrowRight, Loader2, Link } from "lucide-react";
+import { User2, ArrowRight, Loader2, Link, Check, X, Send } from "lucide-react";
 import "./LoginSignup.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -18,192 +18,137 @@ function LoginSignup() {
   const [loginSuccess, setLoginSuccess] = useState("");
   const [signupSuccess, setSignupSuccess] = useState("");
   const [signUpPhone, setSignUpPhone] = useState("");
+  const [sentOtp, setSentotp] = useState("");
+
+
+  // New state for OTP handling
+  const [showEmailOTP, setShowEmailOTP] = useState(false);
+  const [showPhoneOTP, setShowPhoneOTP] = useState(false);
+  const [emailOTP, setEmailOTP] = useState("");
+  const [phoneOTP, setPhoneOTP] = useState("");
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [verifyingEmail, setVerifyingEmail] = useState(false);
+  const [verifyingPhone, setVerifyingPhone] = useState(false);
 
   const navigate = useNavigate();
 
-  // const login = async (e) => {
-  //   e.preventDefault();
-  //   setLoginError("");
-  //   setLoginSuccess("");
-  //   setIsLoading(true);
+  const sendEmailOTP = async() => {
+    try{
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/send-otp/email`, { email: signUpEmail });  
+    setSentotp(await res.data.otp);
+    setShowEmailOTP(true);
+    }
+    catch (error) {
+      console.log(error.message);
+    }
+    
+  };
 
-  //   // Basic validation
-  //   if (!username || !password) {
-  //     setLoginError("Please fill in all fields");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-  //   try {
-  //     const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { 
-  //       username, 
-  //       password 
-  //     });
+  const sendPhoneOTP = () => {
+    // Simulate sending OTP
+    setShowPhoneOTP(true);
+  };
 
-  //     setLoginSuccess("Login successful!");
-  //     sessionStorage.setItem("token", response.data);
-  //     sessionStorage.setItem("user", username);
-      
-  //     // Small delay to show success message
-  //     setTimeout(() => {
-  //       navigate("/home");
-  //     }, 1000);
-  //   } catch (error) {
-  //     setLoginError(
-  //       error.response?.data?.message || "Check your credentials"
-  //     );
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const verifyEmailOTP = () => {
+    setVerifyingEmail(true);
+    // Simulate OTP verification
+    console.log("Verifying email OTP:", emailOTP, sentOtp);
+    setTimeout(() => {
+      setEmailVerified(emailOTP == sentOtp); 
+      setVerifyingEmail(false);
+    }, 1000);
+  };
 
-  // const signup = async (e) => {
-  //   e.preventDefault();
-  //   setSignupError("");
-  //   setSignupSuccess("");
-  //   setIsLoading(true);
-
-  //   // Basic validation
-  //   if (
-  //     !signUpName ||
-  //     !signUpEmail ||
-  //     !signUpPassword ||
-  //     !signUpConfirmPassword
-  //   ) {
-  //     setSignupError("Please fill in all fields");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-
-  //   if (signUpPassword !== signUpConfirmPassword) {
-  //     setSignupError("Passwords do not match");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup_user`, {
-  //       username: signUpName,
-  //       email: signUpEmail,
-  //       password: signUpPassword,
-  //       cnfpassword: signUpConfirmPassword,
-  //       phone_number: signUpPhone
-  //     });
-
-  //     setSignupSuccess("Registration successful! Please login.");
-      
-  //     // Clear form fields
-  //     setSignUpName("");
-  //     setSignUpEmail("");
-  //     setSignUpPassword("");
-  //     setSignUpConfirmPassword("");
-      
-      
-  //     setActiveTab("login");
-  //   } catch (error) {
-  //     setSignupError(
-  //       error.response?.data?.message || "User already exists. Please login."
-  //     );
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const verifyPhoneOTP = () => {
+    setVerifyingPhone(true);
+    // Simulate OTP verification
+    setTimeout(() => {
+      setPhoneVerified(phoneOTP === "123456"); // Demo validation
+      setVerifyingPhone(false);
+    }, 1000);
+  };
 
   const login = async (e) => {
     e.preventDefault();
     setLoginError("");
     setLoginSuccess("");
     setIsLoading(true);
-  
+
+    // Basic validation
     if (!username || !password) {
       setLoginError("Please fill in all fields");
       setIsLoading(false);
       return;
     }
-  
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { 
-        username, 
-        password 
-      });
-  
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/login`,
+        {
+          username,
+          password,
+        }
+      );
+
       setLoginSuccess("Login successful!");
-      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("token", response.data);
       sessionStorage.setItem("user", username);
-  
+
+      // Small delay to show success message
       setTimeout(() => {
         navigate("/home");
       }, 1000);
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        setLoginError(error.response.data.message);
-      } else {
-        setLoginError("An error occurred. Please try again.");
-      }
+      setLoginError(error.response?.data?.message || "Check your credentials");
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   const signup = async (e) => {
     e.preventDefault();
     setSignupError("");
     setSignupSuccess("");
     setIsLoading(true);
-  
-    // Basic field validation
-    if (!signUpName || !signUpEmail || !signUpPhone || !signUpPassword || !signUpConfirmPassword) {
+
+    // Basic validation
+    if (
+      !signUpName ||
+      !signUpEmail ||
+      !signUpPassword ||
+      !signUpConfirmPassword
+    ) {
       setSignupError("Please fill in all fields");
       setIsLoading(false);
       return;
     }
-  
-    // Name validation: Must contain at least 5 letters
-    if (signUpName.length < 5) {
-      setSignupError("Name must contain at least 5 letters.");
-      setIsLoading(false);
-      return;
-    }
-    const mailRegex = /^\d{10}$/;
-    if (!mailRegex.test(signUpPhone)) {
-      setSignupError("Phone number must contain exactly 10 digits.");
-      setIsLoading(false);
-      return;
-    }
-    // Phone number validation: Must be exactly 10 digits
-    const phoneRegex =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    ;
-    if (!phoneRegex.test(signUpEmail)) {
-      setSignupError("Incorrect email format.");
-      setIsLoading(false);
-      return;
-    }
-  
-    // Password validation: Both passwords must match
+
     if (signUpPassword !== signUpConfirmPassword) {
-      setSignupError("Passwords do not match.");
+      setSignupError("Passwords do not match");
       setIsLoading(false);
       return;
     }
-  
+
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup_user`, {
-        username: signUpName,
-        email: signUpEmail,
-        phone_number: signUpPhone,
-        password: signUpPassword,
-        cnfpassword: signUpConfirmPassword,
-      });
-  
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/signup_user`,
+        {
+          username: signUpName,
+          email: signUpEmail,
+          password: signUpPassword,
+          cnfpassword: signUpConfirmPassword,
+          phone_number: signUpPhone,
+        }
+      );
+
       setSignupSuccess("Registration successful! Please login.");
-      
-      // Clear form fields after successful signup
+
+      // Clear form fields
       setSignUpName("");
       setSignUpEmail("");
-      setSignUpPhone("");
       setSignUpPassword("");
       setSignUpConfirmPassword("");
-      
+
       setActiveTab("login");
     } catch (error) {
       setSignupError(
@@ -262,7 +207,14 @@ function LoginSignup() {
           <div className="form-container">
             {activeTab === "login" ? (
               <div className="form-section">
-                <User2 style={{ width: '80px', height: '80px', marginLeft:'40%', marginBottom:'20px' }} />
+                <User2
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    marginLeft: "40%",
+                    marginBottom: "20px",
+                  }}
+                />
                 <h2 className="form-title">Welcome back</h2>
                 <p className="form-subtitle">
                   Please enter your details to sign in
@@ -314,7 +266,11 @@ function LoginSignup() {
                       </label>
                     </div>
                     <div>
-                      <button style={{background:'none'}} className="form-link" onClick={() => navigate("/forgetpassword")}>
+                      <button
+                        style={{ background: "none" }}
+                        className="form-link"
+                        onClick={() => navigate("/forgetpassword")}
+                      >
                         Forgot password?
                       </button>
                     </div>
@@ -347,7 +303,14 @@ function LoginSignup() {
               </div>
             ) : (
               <div className="form-section">
-                <User2 style={{ width: '80px', height: '80px', marginLeft:'40%', marginBottom:'20px' }} />
+                <User2
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    marginLeft: "40%",
+                    marginBottom: "20px",
+                  }}
+                />
                 <h2 className="form-title">Create account</h2>
                 <p className="form-subtitle">
                   Please fill in your details to get started
@@ -381,21 +344,57 @@ function LoginSignup() {
                         value={signUpEmail}
                         onChange={(e) => setSignUpEmail(e.target.value)}
                       />
+                      {signUpEmail && !emailVerified && !showEmailOTP && (
+                        <button
+                          onClick={sendEmailOTP}
+                          className="send-otp-button"
+                        >
+                          <Send size={14} /> Send OTP
+                        </button>
+                      )}
+                      {emailVerified && (
+                        <Check
+                          className="success-icon"
+                          size={20}
+                        />
+                      )}
                     </div>
-                    
+                    {showEmailOTP && !emailVerified && (
+                <div className="otp-input-container">
+                  <input
+                    type="text"
+                    value={emailOTP}
+                    onChange={(e) => setEmailOTP(e.target.value)}
+                    placeholder="Enter Email OTP"
+                    className="form-input with-button"
+                  />
+                  <button
+                    onClick={verifyEmailOTP}
+                    disabled={verifyingEmail}
+                    className="verify-button"
+                  >
+                    {verifyingEmail ? (
+                      <Loader2 className="loading-icon" size={14} />
+                    ) : (
+                      'Verify'
+                    )}
+                  </button>
+                </div>
+              )}
                   </div>
+
                   <div className="form-group">
-  <label htmlFor="signUpPhone">Phone Number</label>
-  <input
-    type="tel"
-    id="signUpPhone"
-    className="form-control"
-    placeholder="Enter phone number"
-    value={signUpPhone}
-    onChange={(e) => setSignUpPhone(e.target.value)}
-    required
-  />
-</div>
+                    <label htmlFor="signUpPhone">Phone Number</label>
+                    <input
+                      type="tel"
+                      id="signUpPhone"
+                      className="form-control"
+                      placeholder="Enter phone number"
+                      value={signUpPhone}
+                      onChange={(e) => setSignUpPhone(e.target.value)}
+                      required
+                    />
+                  </div>
 
                   <div className="form-group">
                     <label htmlFor="signup-password" className="form-label">
@@ -529,5 +528,3 @@ function LoginSignup() {
 }
 
 export default LoginSignup;
-
-

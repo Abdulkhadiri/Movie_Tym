@@ -10,7 +10,7 @@ const MovieDetails = () => {
     const [movies, setMovies] = useState([]);
     const [shows, setShows] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
-    const { id } = useParams();
+    const { movie_name } = useParams();
     const {Location} = useContext(DropdownContext);
     const navigate = useNavigate();
    
@@ -21,7 +21,7 @@ const MovieDetails = () => {
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
-    const movie = movies.find(m => m.id === parseInt(id));
+    const movie = movies.find(m => m.title ===movie_name);
 
     const fetchShows = (date) => {
         if (movie && date) {

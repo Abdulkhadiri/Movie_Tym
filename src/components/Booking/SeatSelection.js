@@ -154,7 +154,6 @@ navigate(`/ticket/${showId}/${encodedBookingId}/${encodedSeats}`);
             console.error('Error during purchase process:', error);
         }
     };
-
     const isDisabled = (seatId) => seatsBooked.includes(seatId);
 
     // Calculate total price based on selected seats
@@ -162,7 +161,6 @@ navigate(`/ticket/${showId}/${encodedBookingId}/${encodedSeats}`);
         const section = sections.find(sec => sec.rows.some(row => seat.startsWith(row)));
         return total + (section ? section.price : 0);
     }, 0);
-
     return (
         <div>
             <NavigationArrows prevPath={`/home`}/>

@@ -85,7 +85,9 @@ vendorRouter.post('/login', async (req, res) => {
         const hashedPassword = result[0].password;
         const isMatch = await bcrypt.compare(password, hashedPassword);
         const token = Auth.createToken(username, password, 'theater_owner');
-        res.status(200).send(token);
+        res.status(200).send({
+            token: token
+        });
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).json({ error: 'Internal server error' });

@@ -11,8 +11,8 @@ function Multicard() {
 
   const navigate = useNavigate();
 
-  const handleMovieClick=(id)=>{
-    navigate(`/movies/${id}`);
+  const handleMovieClick=(title)=>{
+    navigate(`/movies/${title}`);
   }
 
   const responsive = {
@@ -46,7 +46,7 @@ function Multicard() {
       <h1 className="slider-title">Recommended</h1>
       <Carousel className='cardbo' responsive={responsive}>
         {movies.map((movie) => (
-          <div className="carousel-item" key={movie.id} onClick={() => handleMovieClick(movie.id)}>
+          <div className="carousel-item" key={movie.id} onClick={() => handleMovieClick(movie.title)}>
             <img src={movie.image_url} alt={movie.title} />
             
             <div className="button-group">
